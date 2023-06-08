@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import com.squareup.leakcanary.RefWatcher
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle2.components.support.RxFragment
 import pers.sweven.common.app.BaseApplication
@@ -132,13 +131,6 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
             .replace(containerId, fragment)
             .addToBackStack(fragment.javaClass.canonicalName)
             .commitAllowingStateLoss()
-    }
-
-    private fun initLeakCanary() {
-        if (BaseApplication.DEBUG) {
-            val refWatcher: RefWatcher = BaseApplication.getRefWatcher(hostActivity)
-            refWatcher.watch(this)
-        }
     }
 
     override fun onDestroy() {
