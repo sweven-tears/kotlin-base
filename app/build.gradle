@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         if (isApp) {
-            applicationId "com.longyiyiyao.shop.durgshop2"
+            applicationId "com.app.test"
             manifestPlaceholders = [
                     JPUSH_PKGNAME: applicationId,
                     JPUSH_APPKEY : "",
