@@ -1,0 +1,3 @@
+rootProject.name = "swevenbase"
+include ':common'
+include ':app'
