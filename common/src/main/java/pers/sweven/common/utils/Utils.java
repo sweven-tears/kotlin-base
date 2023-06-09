@@ -3,15 +3,21 @@ package pers.sweven.common.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.ColorStateList;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.StateSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.ColorInt;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -67,8 +73,7 @@ public class Utils {
     /**
      * 将px值转换为dip或dp值，保证尺寸大小不变
      *
-     * @param pxValue
-     * @return
+     * @param pxValue （DisplayMetrics类中属性scaledDensity）
      */
     public static int px2dip(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -79,7 +84,6 @@ public class Utils {
      * 将dip或dp值转换为px值，保证尺寸大小不变
      *
      * @param dipValue （DisplayMetrics类中属性density）
-     * @return
      */
     public static int dip2px(Context context, float dipValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -90,7 +94,6 @@ public class Utils {
      * 将px值转换为sp值，保证文字大小不变
      *
      * @param pxValue （DisplayMetrics类中属性scaledDensity）
-     * @return
      */
     public static int px2sp(Context context, float pxValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
@@ -101,7 +104,6 @@ public class Utils {
      * 将sp值转换为px值，保证文字大小不变
      *
      * @param spValue （DisplayMetrics类中属性scaledDensity）
-     * @return
      */
     public static int sp2px(Context context, float spValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
@@ -257,7 +259,7 @@ public class Utils {
 
     /**
      * @param context 上下文
-     * @param assets asset下的文件名
+     * @param assets  asset下的文件名
      * @return 将assets下的json文件转化为JSON文本
      */
     public static String getJsonFormAssets(Context context, String assets) {
@@ -284,5 +286,33 @@ public class Utils {
         textView.setSelected(true);
         textView.setFocusable(true);
         textView.setFocusableInTouchMode(true);
+    }
+
+    /**
+     * 着色器
+     * @param drawable 需要着色的对象
+     * @param color 颜色
+     */
+    public static void tintColor(Drawable drawable, @ColorInt int color) {
+        tintColor(drawable, color, 0);
+    }
+
+    /**
+     * 着色器
+     * @param drawable 需要着色的图像
+     * @param color 颜色
+     * @param pressColor 实现简单的按压变换着色，下压的颜色
+     */
+    public static void tintColor(Drawable drawable, @ColorInt int color, @ColorInt int pressColor) {
+        if (drawable == null) {
+            return;
+        }
+        if (pressColor == 0) {
+            DrawableCompat.setTint(drawable.mutate(), color);
+            return;
+        }
+        int[][] selector = new int[][]{new int[]{android.R.attr.state_pressed}, StateSet.WILD_CARD};
+        ColorStateList stateList = new ColorStateList(selector, new int[]{pressColor, color});
+        DrawableCompat.setTintList(drawable.mutate(), stateList);
     }
 }
