@@ -19,13 +19,14 @@ import androidx.annotation.RawRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.load.resource.gif.GifOptions;
+import com.bumptech.glide.request.BaseRequestOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
@@ -53,6 +54,9 @@ public class GlideUtils {
     private OnGlideListener onGlideListener;
     private boolean isGif;
     private int blur;
+    private BaseRequestOptions<?> options;
+    private boolean skipMemoryCache;
+    private DiskCacheStrategy strategy = DiskCachingStrategy.AUTOMATIC;
 
     private GlideUtils(Context context, ImageView iv) {
         this.context = context;
@@ -119,13 +123,17 @@ public class GlideUtils {
             Log.e("GlideUtils", "imageView can't is null");
             return;
         }
-        RequestManager with = Glide.with(context);
+        RequestManager with = GlideApp.with(context);
         if (isGif) {
             // 解决加载gif出现黑边的异常
             RequestOptions options = new RequestOptions().set(GifOptions.DECODE_FORMAT, PREFER_ARGB_8888);
             with.setDefaultRequestOptions(options);
         }
         RequestBuilder<Drawable> load = with.load(loadModel);
+
+        if (options != null) {
+            load.apply(options);
+        }
 
         if (placeholder > 0) {
             load.error(placeholder).placeholder(placeholder);
@@ -157,6 +165,10 @@ public class GlideUtils {
                 }
             });
         }
+
+        load.skipMemoryCache(skipMemoryCache);
+
+        load.diskCacheStrategy(strategy);
 
         load.into(iv);
     }
@@ -255,8 +267,32 @@ public class GlideUtils {
         return this;
     }
 
-    public GlideUtils toBlur(int radius) {
-        this.blur = radius;
+    /**
+     * @param blur 使模糊程度
+     */
+    public GlideUtils toBlur(int blur) {
+        this.blur = blur;
+        return this;
+    }
+
+    public GlideUtils apply(BaseRequestOptions<?> options) {
+        this.options = options;
+        return this;
+    }
+
+    /**
+     * @param skipMemoryCache 跳过缓存
+     */
+    public GlideUtils setSkipMemoryCache(boolean skipMemoryCache) {
+        this.skipMemoryCache = skipMemoryCache;
+        return this;
+    }
+
+    /**
+     * @param strategy 磁盘缓存策略
+     */
+    public GlideUtils setDiskCacheStrategy(DiskCacheStrategy strategy) {
+        this.strategy = strategy;
         return this;
     }
 

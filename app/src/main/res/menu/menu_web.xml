@@ -5,13 +5,12 @@
     <group>
         <item
             android:id="@+id/menu_refresh"
-            android:icon="@drawable/ic_refresh"
-            android:title="@string/string_refresh" />
+            android:title="@string/refresh" />
         <item
             android:id="@+id/menu_previous"
-            android:title="@string/string_previous" />
+            android:title="@string/previous" />
         <item
             android:id="@+id/menu_exit"
-            android:title="@string/string_exit" />
+            android:title="@string/exit" />
     </group>
 </menu>
