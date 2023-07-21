@@ -146,13 +146,4 @@ ext {
             "bugly-native"                 : 'com.tencent.bugly:nativecrashreport:latest.release'
 
     ]
-
-    String launchModule = ':app'
-
-    isApp = isLaunch(':app', launchModule)
-    isLogin = isLaunch(':login', launchModule)
-}
-
-static boolean isLaunch(String module, String launch) {
-    return module == launch
 }

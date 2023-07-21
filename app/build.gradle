@@ -1,8 +1,4 @@
-if (!isApp) {
-    apply plugin: "com.android.library"
-} else {
-    apply plugin: "com.android.application"
-}
+apply plugin: "com.android.application"
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
@@ -24,14 +20,12 @@ android {
     buildToolsVersion rootProject.ext.android["buildToolsVersion"]
 
     defaultConfig {
-        if (isApp) {
-            applicationId "com.app.test"
-            manifestPlaceholders = [
-                    JPUSH_PKGNAME: applicationId,
-                    JPUSH_APPKEY : "",
-                    JPUSH_CHANNEL: "developer-default",
-            ]
-        }
+        applicationId "com.app.test"
+        manifestPlaceholders = [
+                JPUSH_PKGNAME: applicationId,
+                JPUSH_APPKEY : "",
+                JPUSH_CHANNEL: "developer-default",
+        ]
         minSdkVersion rootProject.ext.android["minSdkVersion"]
         targetSdkVersion rootProject.ext.android["targetSdkVersion"]
         versionCode rootProject.ext.android["versionCode"]
@@ -49,10 +43,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
         }
         debug {
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
         }
     }
     compileOptions {
