@@ -29,7 +29,6 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
     @JvmField
     var loadingDialog: Dialog? = null
     var binding: V? = null
-        private set
     var model: VM? = null
         private set
 

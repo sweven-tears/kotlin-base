@@ -14,4 +14,7 @@ open class SplashActivity :
     override fun doBusiness() {
     }
 
+    override fun registerLayout() {
+        super.registerLayout()
+    }
 }
