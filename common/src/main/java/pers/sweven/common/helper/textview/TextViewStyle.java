@@ -1,9 +1,13 @@
 package pers.sweven.common.helper.textview;
 
+import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
 import android.text.style.TypefaceSpan;
 
 import androidx.annotation.ColorInt;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Sweven on 2021/11/4.
@@ -20,6 +24,7 @@ public class TextViewStyle {
     private ClickableSpan clickableSpan;
     private TypefaceSpan typefaceSpan;
     private Object span;
+    private List<CharacterStyle> styles;
 
     public TextViewStyle() {
     }
@@ -123,6 +128,15 @@ public class TextViewStyle {
 
     public TextViewStyle setSpan(Object span) {
         this.span = span;
+        return this;
+    }
+
+    public List<CharacterStyle> getStyles() {
+        return styles;
+    }
+
+    public TextViewStyle setStyles(CharacterStyle... styles) {
+        this.styles = Arrays.asList(styles);
         return this;
     }
 }

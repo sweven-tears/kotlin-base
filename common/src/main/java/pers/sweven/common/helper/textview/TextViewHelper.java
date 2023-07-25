@@ -2,7 +2,7 @@ package pers.sweven.common.helper.textview;
 
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
@@ -11,7 +11,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.UnderlineSpan;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -78,6 +77,17 @@ public class TextViewHelper {
         return this;
     }
 
+    /**
+     * @param flag 添加spannable的标记，加载addText之后，为当前的字段添加flag，默认Spanned.SPAN_INCLUSIVE_INCLUSIVE
+     */
+    public TextViewHelper addFlags(int flag) {
+        Section section = sections.getLast();
+        if (section != null) {
+            section.flag = flag;
+        }
+        return this;
+    }
+
     public TextView build() {
         SpannableString spannableString = new SpannableString(builder.toString());
         for (Section section : sections) {
@@ -102,56 +112,67 @@ public class TextViewHelper {
     private void addSpanner(SpannableString spannableString, Section section) {
         int start = section.start;
         int end = section.end;
+        int flag = section.flag;
         TextViewStyle style = section.style;
 
         if (style.getTextColor() != 0) {
             ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(style.getTextColor());
-            spannableString.setSpan(foregroundColorSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableString.setSpan(foregroundColorSpan, start, end, flag);
         }
 
         TextSize textSize = style.getTextSize();
         if (textSize != null) {
             if (textSize.isAbsoluteSize()) {
                 AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(textSize.getSize(), textSize.isDip());
-                spannableString.setSpan(absoluteSizeSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                spannableString.setSpan(absoluteSizeSpan, start, end, flag);
             } else {
                 RelativeSizeSpan sizeSpan = new RelativeSizeSpan(textSize.getProportion());
-                spannableString.setSpan(sizeSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                spannableString.setSpan(sizeSpan, start, end, flag);
             }
         }
 
         if (style.getBackground() != 0) {
             BackgroundColorSpan colorSpan = new BackgroundColorSpan(style.getBackground());
-            spannableString.setSpan(colorSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableString.setSpan(colorSpan, start, end, flag);
         }
 
         if (style.isUnderline()) {
             UnderlineSpan underlineSpan = new UnderlineSpan();
-            spannableString.setSpan(underlineSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableString.setSpan(underlineSpan, start, end, flag);
         }
 
         if (style.isStrikethrough()) {
             StrikethroughSpan strikethroughSpan = new StrikethroughSpan();
-            spannableString.setSpan(strikethroughSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableString.setSpan(strikethroughSpan, start, end, flag);
         }
 
         if (style.getClickableSpan() != null) {
+            if (textView != null) {
+                textView.setMovementMethod(LinkMovementMethod.getInstance());
+            }
             ClickableSpan clickableSpan = style.getClickableSpan();
-            spannableString.setSpan(clickableSpan, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableString.setSpan(clickableSpan, start, end, flag);
         }
 
         if (style.getTypefaceSpan() != null) {
-            spannableString.setSpan(style, start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableString.setSpan(style, start, end, flag);
         }
 
         if (style.getSpan() != null) {
-            spannableString.setSpan(style.getSpan(), start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableString.setSpan(style.getSpan(), start, end, flag);
+        }
+
+        if (style.getStyles() != null) {
+            for (CharacterStyle styleStyle : style.getStyles()) {
+                spannableString.setSpan(styleStyle, start, end, flag);
+            }
         }
     }
 
     private static class Section {
         int start;
         int end;
+        int flag = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
         TextViewStyle style;
 
         private Section(int start, int end, TextViewStyle style) {
