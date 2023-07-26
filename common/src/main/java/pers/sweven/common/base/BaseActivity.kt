@@ -105,16 +105,14 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
     open fun initLoadingDialog(loadingDialog: Dialog?) {}
 
     fun dismissLoading() {
-        if (loadingDialog != null) {
-            loadingDialog!!.dismiss()
-        }
+        loadingDialog?.dismiss()
     }
 
     fun showLoading() {
         if (loadingDialog == null) {
             loadingDialog = ProgressDialog(activity)
         }
-        loadingDialog!!.show()
+        loadingDialog?.show()
     }
 
     fun replaceFragment(containerId: Int, fragment: Fragment) {
@@ -205,6 +203,6 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
 
     open fun getBundle(bundle: Bundle) {}
 
-    protected abstract fun initView()
     protected abstract fun doBusiness()
+    protected abstract fun initView()
 }

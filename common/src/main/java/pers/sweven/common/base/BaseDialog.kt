@@ -2,6 +2,7 @@ package pers.sweven.common.base
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 
@@ -23,11 +24,15 @@ abstract class BaseDialog<T : ViewDataBinding?> : Dialog {
     private fun init() {
         binding = DataBindingUtil.inflate(layoutInflater, layout, null, false)
         setContentView(binding!!.root)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         initView()
         doBusiness()
     }
 
-    protected abstract fun initView()
     protected abstract fun doBusiness()
+    protected abstract fun initView()
     protected abstract val layout: Int
 }

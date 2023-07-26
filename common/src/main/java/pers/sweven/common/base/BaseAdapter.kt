@@ -20,7 +20,6 @@ abstract class BaseAdapter<T, R : ViewDataBinding?>(private val layoutId: Int) :
     private val list = arrayListOf<T>()
     private var onItemClick: ((Int, T) -> Unit)? = null
     private var onViewClickMap = hashMapOf<Int, ((Int, T) -> Unit)?>()
-    var currentPosition = 0
 
     open fun addData(t: T) {
         val pos = list.size
@@ -84,16 +83,18 @@ abstract class BaseAdapter<T, R : ViewDataBinding?>(private val layoutId: Int) :
         val holder = BaseViewHolder(binding)
         holder.itemView.setOnClickListener { v: View ->
             if (onItemClick != null) {
-                val tag = v.tag as All<T>
-                onItemClick!!.invoke(tag.position, tag.data)
+                val position = holder.adapterPosition
+                val data = list[position]
+                onItemClick!!.invoke(position, data)
             }
         }
         for (entry in onViewClickMap) {
             if (entry.key > 0) {
                 holder.itemView.findViewById<View>(entry.key).setOnClickListener {
                     if (entry.value != null) {
-                        val tag = holder.itemView.tag as All<T>
-                        entry.value!!.invoke(tag.position, tag.data)
+                        val position = holder.adapterPosition
+                        val data = list[position]
+                        entry.value!!.invoke(position, data)
                     }
                 }
             }
@@ -108,8 +109,7 @@ abstract class BaseAdapter<T, R : ViewDataBinding?>(private val layoutId: Int) :
 
     override fun onBindViewHolder(@NonNull holder: BaseViewHolder<R>, position: Int) {
         val t = list[position]
-        holder.itemView.tag = All(t, position)
-        currentPosition = position
+        holder.itemView.tag = holder
         onData(holder.binding, t)
         onData(holder.binding, t, position)
     }
@@ -149,8 +149,6 @@ abstract class BaseAdapter<T, R : ViewDataBinding?>(private val layoutId: Int) :
     interface OnAdapterClick<T> {
         fun onClick(position: Int, data: T)
     }
-
-    data class All<T>(var data: T, var position: Int)
 
     class BaseViewHolder<R : ViewDataBinding?>(var binding: R) : ViewHolder(binding!!.root)
 }
