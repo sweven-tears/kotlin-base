@@ -203,6 +203,6 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
 
     open fun getBundle(bundle: Bundle) {}
 
-    protected abstract fun doBusiness()
     protected abstract fun initView()
+    protected abstract fun doBusiness()
 }

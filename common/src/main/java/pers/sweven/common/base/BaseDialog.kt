@@ -21,7 +21,7 @@ abstract class BaseDialog<T : ViewDataBinding?> : Dialog {
         init()
     }
 
-    private fun init() {
+    protected fun init() {
         binding = DataBindingUtil.inflate(layoutInflater, layout, null, false)
         setContentView(binding!!.root)
     }
