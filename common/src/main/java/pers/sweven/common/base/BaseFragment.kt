@@ -141,6 +141,6 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
         }
     }
 
-    protected abstract fun doBusiness()
     protected abstract fun initView()
+    protected abstract fun doBusiness()
 }

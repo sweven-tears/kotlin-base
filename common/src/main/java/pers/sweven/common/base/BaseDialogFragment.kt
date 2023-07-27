@@ -167,11 +167,11 @@ abstract class BaseDialogFragment<T : ViewDataBinding, VM : BaseViewModel>(val l
         dialog?.window?.attributes = attributes
     }
 
-    abstract fun doBusiness()
-
     abstract fun initView()
 
     abstract fun setLayoutStyle()
+
+    abstract fun doBusiness()
 
     fun show(supportFragmentManager: FragmentManager?) {
         if (supportFragmentManager != null) {

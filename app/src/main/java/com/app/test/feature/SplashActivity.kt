@@ -5,16 +5,11 @@ import com.app.test.databinding.ActivitySplashBinding
 import pers.sweven.common.base.BaseActivity
 import pers.sweven.common.base.BaseViewModel
 
-open class SplashActivity :
+class SplashActivity :
     BaseActivity<ActivitySplashBinding, BaseViewModel>(R.layout.activity_splash) {
     override fun initView() {
-
     }
 
     override fun doBusiness() {
-    }
-
-    override fun registerLayout() {
-        super.registerLayout()
     }
 }
