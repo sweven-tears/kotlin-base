@@ -36,9 +36,9 @@ public abstract class RxBusObserver<T> implements Observer<T> {
     }
 
     @Override
-    public void onNext(@NonNull T t) {
+    public void onNext(@NonNull T data) {
         try {
-            onSuccess(t);
+            onSuccess(data);
         } catch (Exception e) {
             onError(e);
         } finally {
@@ -46,7 +46,7 @@ public abstract class RxBusObserver<T> implements Observer<T> {
         }
     }
 
-    protected abstract void onSuccess(T t);
+    protected abstract void onSuccess(T data);
 
     @Override
     public void onError(@NonNull Throwable e) {
