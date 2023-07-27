@@ -9,6 +9,7 @@ import pers.sweven.common.rx.RxBus
 import pers.sweven.common.rx.RxBusObserver
 import pers.sweven.common.rx.RxUtil
 import pers.sweven.common.utils.ToastUtils
+import pers.sweven.common.widget.SItemDecoration
 
 class SplashActivity :
     BaseActivity<ActivitySplashBinding, BaseViewModel>(R.layout.activity_splash) {
@@ -25,6 +26,8 @@ class SplashActivity :
                     super.onError(e)
                 }
             })
+
+        SItemDecoration(20)
     }
 
     override fun doBusiness() {
