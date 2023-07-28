@@ -63,6 +63,10 @@ public class GlideUtils {
         this.iv = iv;
     }
 
+    public static GlideUtils with(Context context) {
+        return new GlideUtils(context, null);
+    }
+
     public static GlideUtils with(ImageView iv) {
         return new GlideUtils(iv.getContext(), iv);
     }
