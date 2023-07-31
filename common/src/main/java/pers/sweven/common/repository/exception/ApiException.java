@@ -80,7 +80,7 @@ public class ApiException extends IOException {
         } else if (e instanceof IllegalStateException) {
             ex = new ApiException(ERROR.ILLEGAL_STATE_ERROR, e.getMessage(), e);
         } else {
-            ex = new ApiException(ERROR.UNKNOWN, "未知错误", e);
+            ex = new ApiException(ERROR.UNKNOWN, e.getMessage(), e);
         }
         return ex;
     }

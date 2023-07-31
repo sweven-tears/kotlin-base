@@ -1,8 +1,15 @@
 package pers.sweven.common.repository;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -17,19 +24,26 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pers.sweven.common.app.BaseApplication;
 import pers.sweven.common.repository.converter.GsonConverterBodyFactory;
 import pers.sweven.common.repository.cookie.CookieJarImpl;
 import pers.sweven.common.repository.cookie.store.PersistentCookieStore;
+import pers.sweven.common.repository.exception.ApiException;
+import pers.sweven.common.repository.exception.ExceptionEntity;
 import pers.sweven.common.repository.interceptor.CacheInterceptor;
-import pers.sweven.common.repository.interceptor.ExceptionInterceptor;
 import pers.sweven.common.repository.interceptor.HeaderInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
-public class BaseRetrofit {
+/**
+ * 不建议直接使用，有需要使用请复制该文件进行操作
+ */
+public class _BaseRetrofit {
     public static OkHttpClient client;
     private static volatile Retrofit retrofit;
 
@@ -59,7 +73,7 @@ public class BaseRetrofit {
 
     public static Retrofit getRetrofit(String baseUrl) {
         if (retrofit == null) {
-            synchronized (BaseRetrofit.class) {
+            synchronized (_BaseRetrofit.class) {
                 if (retrofit == null) {
                     //添加一个log拦截器,打印所有的log
                     HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
@@ -117,12 +131,43 @@ public class BaseRetrofit {
             sc.init(null, new TrustManager[]{new TrustAllCerts()}, new SecureRandom());
 
             ssfFactory = sc.getSocketFactory();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         return ssfFactory;
     }
 
+    /**
+     * 拦截处理器，建议使用ApiException
+     */
+    public static class ExceptionInterceptor implements Interceptor {
+
+        @NotNull
+        @Override
+        public Response intercept(@NotNull Chain chain) throws IOException {
+            Request request = chain.request();
+            Response response = chain.proceed(request);
+            int code = response.code();
+            //225 215 218 200
+            if (code == 200) {
+                return response;
+            } else if (code == 225 || code == 215 || code == 218) {
+                String content = new String(response.body().bytes());
+                Log.i("okhttp.OkHttpClient", content + "/n <-- END HTTP ERROR");
+                ExceptionEntity entity;
+                try {
+                    entity = new Gson().fromJson(content, ExceptionEntity.class);
+                } catch (JsonSyntaxException ignore) {
+                    entity = new ExceptionEntity();
+                    entity.setMessage(response.message());
+                }
+                throw new ApiException(request.header("path"), code, entity);
+            }
+            return response;
+        }
+    }
+
+    @SuppressLint({"CustomX509TrustManager", "TrustAllX509TrustManager"})
     private static class TrustAllCerts implements X509TrustManager {
         @Override
         public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
@@ -142,6 +187,7 @@ public class BaseRetrofit {
     /**
      * 信任所有的服务器,返回true
      */
+    @SuppressLint("BadHostnameVerifier")
     private static class TrustAllHostnameVerifier implements HostnameVerifier {
         @Override
         public boolean verify(String hostname, SSLSession session) {
