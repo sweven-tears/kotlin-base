@@ -20,10 +20,6 @@ import retrofit2.HttpException;
  * 2021/8/16 09:16
  */
 public class ApiException extends IOException {
-    /**
-     * 215,218:message提示
-     * 225:未登录
-     */
     private int code;
     private ExceptionEntity entity;
     private String tag;
