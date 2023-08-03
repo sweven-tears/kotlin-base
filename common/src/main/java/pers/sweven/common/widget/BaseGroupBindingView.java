@@ -11,9 +11,11 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 
 /**
+ * 请使用{@link BaseBindingViewGroup}<br>
  * Created by Sweven on 2021/11/30.
  * Email:sweventears@Foxmail.com
  */
+@Deprecated
 public abstract class BaseGroupBindingView<T extends ViewDataBinding> extends FrameLayout {
     protected T binding;
 
