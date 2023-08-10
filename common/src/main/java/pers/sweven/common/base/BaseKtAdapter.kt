@@ -9,13 +9,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import pers.sweven.common.base.BaseAdapter.BaseViewHolder
+import pers.sweven.common.base.BaseKtAdapter.BaseViewHolder
 
 /**
  * Created by Sweven on 2021/7/28--21:26.
  * Email: sweventears@163.com
  */
-abstract class BaseAdapter<T, R : ViewDataBinding?>(private val layoutId: Int) :
+abstract class BaseKtAdapter<T, R : ViewDataBinding?>(private val layoutId: Int) :
     RecyclerView.Adapter<BaseViewHolder<R>>() {
     private val list = arrayListOf<T>()
     private var onItemClick: ((Int, T) -> Unit)? = null
@@ -130,7 +130,7 @@ abstract class BaseAdapter<T, R : ViewDataBinding?>(private val layoutId: Int) :
         onViewClickMap[clickId] = onViewClick
     }
 
-    open fun setOnViewClickListener(onViewClick: OnAdapterClick<T>, clickId: Int) {
+    open fun setOnViewClickListener(onViewClick: BaseAdapter.OnAdapterClick<T>, clickId: Int) {
         this.onViewClickMap[clickId] = fun(position: Int, t: T) {
             onViewClick.onClick(position, t)
         }
@@ -140,14 +140,10 @@ abstract class BaseAdapter<T, R : ViewDataBinding?>(private val layoutId: Int) :
         this.onItemClick = onItemClick
     }
 
-    open fun setOnItemClickListener(onItemClick: OnAdapterClick<T>) {
+    open fun setOnItemClickListener(onItemClick: BaseAdapter.OnAdapterClick<T>) {
         this.onItemClick = fun(position: Int, t: T) {
             onItemClick.onClick(position, t)
         }
-    }
-
-    interface OnAdapterClick<T> {
-        fun onClick(position: Int, data: T)
     }
 
     class BaseViewHolder<R : ViewDataBinding?>(var binding: R) : ViewHolder(binding!!.root)
