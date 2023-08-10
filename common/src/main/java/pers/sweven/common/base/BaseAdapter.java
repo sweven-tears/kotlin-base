@@ -2,6 +2,7 @@ package pers.sweven.common.base;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -147,10 +148,11 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     }
 
     public static class BaseViewHolder<R extends ViewDataBinding> extends RecyclerView.ViewHolder {
-        private R binding;
+        private final R binding;
 
         public BaseViewHolder(R binding) {
             super(binding.getRoot());
+            this.binding = binding;
         }
     }
 }
