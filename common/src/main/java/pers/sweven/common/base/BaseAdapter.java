@@ -46,7 +46,6 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     public void addData(int position, T data) {
         list.add(position, data);
         notifyItemInserted(position);
-        notifyItemRangeChanged(position, getItemCount() - position, 0);
     }
 
     public void addData(List<T> list) {
@@ -72,7 +71,6 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     public void removeDataAt(int position) {
         list.remove(position);
         notifyItemChanged(position);
-        notifyItemRangeChanged(position, getItemCount() - position, 0);
     }
 
     public List<T> getList() {
