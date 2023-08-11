@@ -22,7 +22,9 @@ import java.util.Map;
 public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adapter<BaseAdapter.BaseViewHolder<R>> {
     private final List<T> list = new ArrayList<>();
     private final int layoutId;
-    private final Map<Integer, OnAdapterClick<T>> onViewClickMap = new HashMap<>();
+    private final Map<Integer, OnAdapterViewClick<T>> onViewClickMap = new HashMap<>();
+    private final Map<Integer, OnAdapterClick<T>> onClickMap = new HashMap<>();
+    private OnAdapterViewClick<T> onItemViewClick;
     private OnAdapterClick<T> onItemClick;
 
     public BaseAdapter(int layoutId) {
@@ -95,17 +97,38 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
         R binding = createView(parent, viewType);
         BaseViewHolder<R> holder = new BaseViewHolder<>(binding);
         holder.itemView.setOnClickListener(v -> {
+            int position = holder.getAdapterPosition();
+            T data = list.get(position);
+            if (onItemViewClick != null) {
+                onItemViewClick.onClick(v, position, data);
+            }
             if (onItemClick != null) {
-                int position = holder.getAdapterPosition();
-                T data = list.get(position);
                 onItemClick.onClick(position, data);
             }
         });
         for (Integer id : onViewClickMap.keySet()) {
-            holder.itemView.findViewById(id).setOnClickListener(v -> {
+            View view = holder.itemView.findViewById(id);
+            if (view == null) {
+                continue;
+            }
+            view.setOnClickListener(v -> {
                 int position = holder.getAdapterPosition();
                 T data = list.get(position);
-                OnAdapterClick<T> click = onViewClickMap.get(id);
+                OnAdapterViewClick<T> click = onViewClickMap.get(id);
+                if (click != null) {
+                    click.onClick(v, position, data);
+                }
+            });
+        }
+        for (Integer id : onClickMap.keySet()) {
+            View view = holder.itemView.findViewById(id);
+            if (view == null) {
+                continue;
+            }
+            view.setOnClickListener(v->{
+                int position = holder.getAdapterPosition();
+                T data = list.get(position);
+                OnAdapterClick<T> click = onClickMap.get(id);
                 if (click != null) {
                     click.onClick(position, data);
                 }
@@ -133,17 +156,37 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     protected void onData(R binding, T data, int position) {
     }
 
-    public void setOnViewClickListener(OnAdapterClick<T> onViewClick, int resId) {
+    public void setOnViewClickListener(OnAdapterViewClick<T> onViewClick, int resId) {
         this.onViewClickMap.put(resId, onViewClick);
     }
 
-    public void setOnItemClickListener(OnAdapterClick<T> onItemClick) {
+    public void setOnItemClickListener(OnAdapterViewClick<T> onItemClick) {
+        this.onItemViewClick = onItemClick;
+    }
+
+    @Deprecated
+    public void setOnViewClickListener(OnAdapterClick<T> onViewClick, int resId) {
+        this.onClickMap.put(resId, onViewClick);
+    }
+
+    @Deprecated
+    public void setOnItemClick(OnAdapterClick<T> onItemClick) {
         this.onItemClick = onItemClick;
     }
 
+    /**
+     * 后续版本将删除该构建
+     */
+    @Deprecated
     public interface OnAdapterClick<T> {
+        @Deprecated
         void onClick(int position, T data);
     }
+
+    public interface OnAdapterViewClick<T> {
+        void onClick(View view, int position, T data);
+    }
+
 
     public static class BaseViewHolder<R extends ViewDataBinding> extends RecyclerView.ViewHolder {
         private final R binding;
