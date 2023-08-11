@@ -23,8 +23,9 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     private final List<T> list = new ArrayList<>();
     private final int layoutId;
     private final Map<Integer, OnAdapterViewClick<T>> onViewClickMap = new HashMap<>();
-    private final Map<Integer, OnAdapterClick<T>> onClickMap = new HashMap<>();
     private OnAdapterViewClick<T> onItemViewClick;
+    // 方式二
+    private final Map<Integer, OnAdapterClick<T>> onClickMap = new HashMap<>();
     private OnAdapterClick<T> onItemClick;
 
     public BaseAdapter(int layoutId) {
@@ -100,7 +101,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
             int position = holder.getAdapterPosition();
             T data = list.get(position);
             if (onItemViewClick != null) {
-                onItemViewClick.onClick(v, position, data);
+                onItemViewClick.onClick(new AdapterIt<>(v, position, data));
             }
             if (onItemClick != null) {
                 onItemClick.onClick(position, data);
@@ -116,7 +117,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
                 T data = list.get(position);
                 OnAdapterViewClick<T> click = onViewClickMap.get(id);
                 if (click != null) {
-                    click.onClick(v, position, data);
+                    click.onClick(new AdapterIt<>(v, position, data));
                 }
             });
         }
@@ -125,7 +126,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
             if (view == null) {
                 continue;
             }
-            view.setOnClickListener(v->{
+            view.setOnClickListener(v -> {
                 int position = holder.getAdapterPosition();
                 T data = list.get(position);
                 OnAdapterClick<T> click = onClickMap.get(id);
@@ -164,12 +165,10 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
         this.onItemViewClick = onItemClick;
     }
 
-    @Deprecated
     public void setOnViewClickListener(OnAdapterClick<T> onViewClick, int resId) {
         this.onClickMap.put(resId, onViewClick);
     }
 
-    @Deprecated
     public void setOnItemClick(OnAdapterClick<T> onItemClick) {
         this.onItemClick = onItemClick;
     }
@@ -177,14 +176,27 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     /**
      * 后续版本将删除该构建
      */
-    @Deprecated
     public interface OnAdapterClick<T> {
-        @Deprecated
         void onClick(int position, T data);
     }
 
     public interface OnAdapterViewClick<T> {
-        void onClick(View view, int position, T data);
+        void onClick(AdapterIt<T> it);
+    }
+
+    public static class AdapterIt<T> {
+        public View view;
+        public int position;
+        public T data;
+
+        public AdapterIt() {
+        }
+
+        public AdapterIt(View view, int position, T data) {
+            this.view = view;
+            this.position = position;
+            this.data = data;
+        }
     }
 
 
