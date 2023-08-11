@@ -81,7 +81,7 @@ dependencies {
 //    api rootProject.ext.dependencies['jpush-jcore']
 
 
-    api rootProject.ext.dependencies['arouter-api']
+//    api rootProject.ext.dependencies['arouter-api']
 //    kapt rootProject.ext.dependencies["arouter-compiler"]
 
 //    implementation rootProject.ext.dependencies["umsdk-common"]
