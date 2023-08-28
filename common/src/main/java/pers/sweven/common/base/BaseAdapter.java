@@ -138,7 +138,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
         return holder;
     }
 
-    private R createView(ViewGroup parent, int viewType) {
+    protected R createView(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         return DataBindingUtil.inflate(inflater, layoutId, null, false);
     }
@@ -169,7 +169,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
         this.onClickMap.put(resId, onViewClick);
     }
 
-    public void setOnItemClick(OnAdapterClick<T> onItemClick) {
+    public void setOnItemClickListener(OnAdapterClick<T> onItemClick) {
         this.onItemClick = onItemClick;
     }
 
