@@ -165,11 +165,13 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
         this.onItemViewClick = onItemClick;
     }
 
-    public void setOnViewClickListener(OnAdapterClick<T> onViewClick, int resId) {
+    @Deprecated
+    public void setOnViewClick(OnAdapterClick<T> onViewClick, int resId) {
         this.onClickMap.put(resId, onViewClick);
     }
 
-    public void setOnItemClickListener(OnAdapterClick<T> onItemClick) {
+    @Deprecated
+    public void setOnItemClick(OnAdapterClick<T> onItemClick) {
         this.onItemClick = onItemClick;
     }
 
