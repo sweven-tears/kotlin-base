@@ -48,10 +48,8 @@ public class RxUtil {
      */
     public static <T> ObservableTransformer<T, T> applySchedulers(BaseViewModel viewModel) {
         return observable -> observable.subscribeOn(Schedulers.io())
-                .doOnSubscribe(disposable -> viewModel.getShowLoading().setValue(true))
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doFinally(() -> viewModel.getShowLoading().setValue(false))
                 .compose(bindToLifecycle(viewModel.getProvider()));
     }
 
