@@ -2,8 +2,8 @@ package pers.sweven.common.base
 
 import android.app.Dialog
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
@@ -67,12 +67,16 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
         try {
             val p = javaClass.genericSuperclass as ParameterizedType?
             val type = p!!.actualTypeArguments[1] as Class<*>
-            vm = type.newInstance() as VM
+            vm = newViewModel(type)
         } catch (e: Exception) {
             e.printStackTrace()
         }
         vm?.attachLifecycle(this)
         return vm
+    }
+
+    open fun newViewModel(clazz:Class<*>):VM{
+        return clazz.newInstance() as VM
     }
 
     lateinit var activity: BaseActivity<*, *>

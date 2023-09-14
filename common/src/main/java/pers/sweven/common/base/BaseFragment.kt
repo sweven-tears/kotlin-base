@@ -96,12 +96,16 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
         try {
             val superclass = javaClass.genericSuperclass as ParameterizedType?
             val clazz = superclass!!.actualTypeArguments[1] as Class<*>
-            vm = clazz.newInstance() as VM
+            vm = newViewModel(clazz)
         } catch (e: Exception) {
             e.printStackTrace()
         }
         vm?.attachLifecycle(this)
         return vm
+    }
+
+    open fun newViewModel(clazz:Class<*>):VM{
+        return clazz.newInstance() as VM
     }
 
     open fun getBundle(bundle: Bundle) {
