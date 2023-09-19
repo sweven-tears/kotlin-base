@@ -2,7 +2,6 @@ package pers.sweven.common.base
 
 import android.app.Dialog
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -14,7 +13,6 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle2.components.support.RxFragment
-import pers.sweven.common.utils.DisplayUtils
 import pers.sweven.common.utils.ToastUtils
 import pers.sweven.common.utils.Utils
 import java.lang.reflect.ParameterizedType
@@ -34,7 +32,7 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DisplayUtils.setDefaultDisplay(this)
+        loadingDialog = initLoadingDialog()
         activity = this
         var extras = intent.extras
         if (extras == null) {
@@ -43,13 +41,12 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
         getBundle(extras)
         registerLayout()
         model = initViewModel()
-        initLoadingDialog(loadingDialog)
         initView()
         initObservable(model!!)
         Thread(this::doBusiness).start()
     }
 
-    open fun registerLayout(){
+    open fun registerLayout() {
         binding = DataBindingUtil.setContentView(this, layoutId)
     }
 
@@ -75,7 +72,7 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
         return vm
     }
 
-    open fun newViewModel(clazz:Class<*>):VM{
+    open fun newViewModel(clazz: Class<*>): VM {
         return clazz.newInstance() as VM
     }
 
@@ -106,7 +103,9 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
     /**
      * 自定义加载Loading
      */
-    open fun initLoadingDialog(loadingDialog: Dialog?) {}
+    open fun initLoadingDialog(): Dialog? {
+        return null
+    }
 
     fun dismissLoading() {
         loadingDialog?.dismiss()
