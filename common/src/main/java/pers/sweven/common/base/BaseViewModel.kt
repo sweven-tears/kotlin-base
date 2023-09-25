@@ -23,7 +23,7 @@ open class BaseViewModel : ViewModel() {
         provider = null
     }
 
-    fun postThrowable(throws: Throwable) {
+    open fun postThrowable(throws: Throwable) {
         val exception = ApiException.handleException(throws)
         throwable.postValue(exception)
         if (exception.tag != null) {
@@ -31,7 +31,7 @@ open class BaseViewModel : ViewModel() {
         }
     }
 
-    fun postThrowable(throws: Throwable, tag: String) {
+    open fun postThrowable(throws: Throwable, tag: String) {
         val exception = ApiException.handleException(throws, tag)
         throwable.postValue(exception)
     }
