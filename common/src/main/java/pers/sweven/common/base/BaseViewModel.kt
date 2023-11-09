@@ -25,9 +25,10 @@ open class BaseViewModel : ViewModel() {
 
     open fun postThrowable(throws: Throwable) {
         val exception = ApiException.handleException(throws)
-        throwable.postValue(exception)
         if (exception.tag != null) {
             postThrowable(exception, exception.tag)
+        } else {
+            throwable.postValue(exception)
         }
     }
 

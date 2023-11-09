@@ -16,9 +16,11 @@ import java.text.ParseException;
 import retrofit2.HttpException;
 
 /**
+ * 建议自定义，不建议直接使用
  * author sweven
  * 2021/8/16 09:16
  */
+@Deprecated
 public class ApiException extends IOException {
     private int code;
     private ExceptionEntity entity;

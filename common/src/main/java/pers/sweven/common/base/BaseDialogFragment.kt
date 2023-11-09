@@ -173,10 +173,12 @@ abstract class BaseDialogFragment<T : ViewDataBinding, VM : BaseViewModel>(val l
 
     abstract fun doBusiness()
 
-    fun show(supportFragmentManager: FragmentManager?) {
+    open fun show(supportFragmentManager: FragmentManager?) {
         if (supportFragmentManager != null) {
-            show(supportFragmentManager, this::class.java.simpleName)
-        }else{
+            if (!isAdded) {
+                show(supportFragmentManager, this::class.java.simpleName)
+            }
+        } else {
             ToastUtils.showShort("发生异常，请稍后重试！")
         }
     }

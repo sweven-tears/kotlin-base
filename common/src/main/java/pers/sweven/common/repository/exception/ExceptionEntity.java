@@ -4,6 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/**
+ * 不建议直接使用
+ */
+@Deprecated
 public class ExceptionEntity {
 
     /**
