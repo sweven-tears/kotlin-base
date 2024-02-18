@@ -3,7 +3,7 @@ plugins {
 }
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.github.dcendents.android-maven'
 
 group='com.github.sweven-tears'
 
@@ -12,23 +12,23 @@ android {
         dataBinding = true
     }
 
-    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
-    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
+    compileSdkVersion config.android["compileSdkVersion"]
+    buildToolsVersion config.android["buildToolsVersion"]
 
     defaultConfig {
-        minSdkVersion rootProject.ext.android["minSdkVersion"]
-        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
-        versionCode rootProject.ext.android["versionCode"]
-        versionName rootProject.ext.android["versionName"]
+        minSdkVersion config.android["minSdkVersion"]
+        targetSdkVersion config.android["targetSdkVersion"]
+        versionCode config.android["versionCode"]
+        versionName config.android["versionName"]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                includeCompileClasspath = true
-            }
-        }
+//        javaCompileOptions {
+//            annotationProcessorOptions {
+//                includeCompileClasspath = true
+//            }
+//        }
     }
 
     buildTypes {
@@ -38,8 +38,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility rootProject.ext.android["sourceCompatibility"]
-        targetCompatibility rootProject.ext.android["targetCompatibility"]
+        sourceCompatibility config.android["sourceCompatibility"]
+        targetCompatibility config.android["targetCompatibility"]
     }
 
     sourceSets {
@@ -52,49 +52,49 @@ android {
 dependencies {
     implementation fileTree(includes: ['*.jar'], dir: 'libs')
 
-    implementation rootProject.ext.dependencies["appcompat"]
-    implementation rootProject.ext.dependencies["meterial"]
-    implementation rootProject.ext.dependencies["constraintlayout"]
-    testImplementation rootProject.ext.dependencies["junit"]
-    androidTestImplementation rootProject.ext.dependencies["ext.junit"]
-    androidTestImplementation rootProject.ext.dependencies["espresso"]
+    implementation config.dependencies["appcompat"]
+    implementation config.dependencies["meterial"]
+    implementation config.dependencies["constraintlayout"]
+    testImplementation config.dependencies["junit"]
+    androidTestImplementation config.dependencies["ext.junit"]
+    androidTestImplementation config.dependencies["espresso"]
 
-    api rootProject.ext.dependencies['recyclerview']
+    api config.dependencies['recyclerview']
 
-    api rootProject.ext.dependencies['gson']
-    api rootProject.ext.dependencies['okhttp']
+    api config.dependencies['gson']
+    api config.dependencies['okhttp']
 
-    implementation rootProject.ext.dependencies['glide']
-    kapt rootProject.ext.dependencies['glide-compiler']
+    implementation config.dependencies['glide']
+    kapt config.dependencies['glide-compiler']
 
-    api rootProject.ext.dependencies['retrofit']
-    api rootProject.ext.dependencies['logging-intercepter']
-    api rootProject.ext.dependencies['rxlifecycle-components']
-    api rootProject.ext.dependencies['retrofit-gson']
-    api rootProject.ext.dependencies['rxandroid']
-    api rootProject.ext.dependencies['adapter-rxjava']
-    api rootProject.ext.dependencies['core-ktx']
-    api rootProject.ext.dependencies['kotlin']
-    api rootProject.ext.dependencies['immerse']
-    api rootProject.ext.dependencies['immerse-components']
-//    api rootProject.ext.dependencies['jpush']
-//    api rootProject.ext.dependencies['jpush-jcore']
+    api config.dependencies['retrofit']
+    api config.dependencies['logging-intercepter']
+    api config.dependencies['rxlifecycle-components']
+    api config.dependencies['retrofit-gson']
+    api config.dependencies['rxandroid']
+    api config.dependencies['adapter-rxjava']
+    api config.dependencies['core-ktx']
+    api config.dependencies['kotlin']
+    api config.dependencies['immerse']
+    api config.dependencies['immerse-components']
+//    api config.dependencies['jpush']
+//    api config.dependencies['jpush-jcore']
 
 
-//    api rootProject.ext.dependencies['arouter-api']
-//    kapt rootProject.ext.dependencies["arouter-compiler"]
+//    api config.dependencies['arouter-api']
+//    kapt config.dependencies["arouter-compiler"]
 
-//    implementation rootProject.ext.dependencies["umsdk-common"]
-//    implementation rootProject.ext.dependencies["umsdk-asms"]
-//    implementation rootProject.ext.dependencies["umsdk-crash"]
-//    implementation rootProject.ext.dependencies["umsdk-aoid_lenovo"]
-//    implementation rootProject.ext.dependencies["umsdk-aoid_oppo"]
-//    implementation rootProject.ext.dependencies["umsdk-aoid_mi"]
-//    implementation rootProject.ext.dependencies["umsdk-aoid_vivo"]
+//    implementation config.dependencies["umsdk-common"]
+//    implementation config.dependencies["umsdk-asms"]
+//    implementation config.dependencies["umsdk-crash"]
+//    implementation config.dependencies["umsdk-aoid_lenovo"]
+//    implementation config.dependencies["umsdk-aoid_oppo"]
+//    implementation config.dependencies["umsdk-aoid_mi"]
+//    implementation config.dependencies["umsdk-aoid_vivo"]
 
-//    debugImplementation rootProject.ext.dependencies["leak-debug"]
-//    releaseImplementation rootProject.ext.dependencies["leak-release"]
+//    debugImplementation config.dependencies["leak-debug"]
+//    releaseImplementation config.dependencies["leak-release"]
 }
-repositories {
-    mavenCentral()
-}
+//repositories {
+//    mavenCentral()
+//}

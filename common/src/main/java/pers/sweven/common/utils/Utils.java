@@ -4,10 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
+import android.util.Log;
 import android.util.StateSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -29,8 +35,62 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import pers.sweven.common.helper.textview.TextSize;
+import pers.sweven.common.helper.textview.TextViewHelper;
+import pers.sweven.common.helper.textview.TextViewStyle;
 
 public class Utils {
+    /**
+     * 富文本设置<br/>
+     * example:46541^size:2.4;font:D-DIN;bold:1|\n供应商已采购药店^strikethrough:1
+     */
+    public static void setRichText(TextView textView, CharSequence charSequence) {
+        // 46541^size:2.4;font:D-DIN;bold:1|\n供应商已采购药店
+        String s = charSequence.toString();
+        // 多个段落样式分组
+        String[] wordsGroup = s.split("\\|");//["46541^size:2.4;font:D-DIN;bold:1","\n供应商已采购药店"]
+        TextViewHelper helper = new TextViewHelper(textView);
+        for (String words : wordsGroup) {
+            // 文本和样式分组
+            String[] styles = words.split("\\^");//["46541","size:2.4;font:D-DIN;bold:1"]
+            String text = styles[0];// 获取文本
+
+            // 提取样式
+            TextViewStyle textViewStyle = new TextViewStyle();
+            if (styles.length > 1) {
+                // 多个样式分组
+                String[] textStyles = styles[1].split(";");//["size:2.4","font:D-DIN","bold:1"]
+                for (String textStyle : textStyles) {
+                    // 样式名称键值分组
+                    String[] styleValue = textStyle.split(":");//["size","2.4"]
+                    String key = styleValue[0];//"size"
+                    if (styleValue.length > 1) {
+                        String value = styleValue[1];
+                        if ("color".equals(key)) {// 颜色赋值
+                            textViewStyle.setTextColor(Color.parseColor(value));
+                        } else if ("size".equals(key)) {// 字体大小赋值
+                            textViewStyle.setTextSize(new TextSize(NumberUtils.parseFloat(value)));
+                        } else if ("font".equals(key)) {// 字体赋值
+                            Log.e("Utils", "字体样式请自定义");
+                        } else if ("bold".equals(key)) {// 字体粗细赋值
+                            StyleSpan bold = new StyleSpan(Typeface.BOLD);
+                            StyleSpan normal = new StyleSpan(Typeface.NORMAL);
+                            StyleSpan italic = new StyleSpan(Typeface.ITALIC);
+                            textViewStyle.setSpan("1".equals(value) ? bold : "2".equals(value) ? italic : normal);
+                        } else if ("strikethrough".equals(key)) {// 删除线添加
+                            textViewStyle.setStrikethrough("1".equals(value));
+                        }
+                    }
+                }
+            }
+
+            // 赋予文本和样式
+            helper.addText(text, textViewStyle);
+        }
+        // 文本、样式渲染
+        helper.build();
+    }
+
     public static boolean hiddenKeyboard(Context context, View v) {
         if (v == null) {
             return false;

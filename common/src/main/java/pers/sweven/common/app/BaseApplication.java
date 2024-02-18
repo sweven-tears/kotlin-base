@@ -10,11 +10,13 @@ import pers.sweven.common.utils.cache.CacheManager;
 public class BaseApplication extends Application {
     private static Context mContext;
     public static boolean DEBUG;
+    public static Application application;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = this;
+        application = this;
 
         CacheManager.init(this);
 

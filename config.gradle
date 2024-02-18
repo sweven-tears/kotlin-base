@@ -96,7 +96,7 @@ ext {
             "android-gif-drawable"         : 'pl.droidsonroids.gif:android-gif-drawable:1.2.12',
 
             //微信、支付宝、银联支付集成
-            "pay-relinran"                 : 'com.github.RelinRan:AndroidPay:1.0.11',
+            "pay-relinran"                 : 'com.github.RelinRan:AndroidPay:2022.3.13.1',
 
             // 红点消息管理
             'redBagde'                     : 'com.github.chendongde310:SuperBadge:0.2.2',
