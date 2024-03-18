@@ -5,6 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.app.ActivityOptionsCompat;
+
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,7 +28,9 @@ public class PageManager {
     protected Class<?> clazz;
     protected String page;
     private int flags;
+    @Deprecated
     private Bundle options;
+    private ActivityOptionsCompat optionsCompat;
     private boolean forbiddenRepeat;
     private boolean keepOnly;
 
@@ -110,6 +119,7 @@ public class PageManager {
     /**
      * 带requestCode启动activity
      */
+    @Deprecated
     public void navigation(Activity activity, int requestCode) {
         if (clazz == null) {
             ToastUtils.showShort("页面" + page + "不存在");
@@ -131,6 +141,35 @@ public class PageManager {
             ToastUtils.showShort(activity.getClass().getCanonicalName() + "页面跳转失败");
             e.printStackTrace();
         }
+    }
+
+    public void navigation(RxAppCompatActivity activity, ActivityResultCallback<ActivityResult> callback) {
+        if (clazz == null) {
+            ToastUtils.showShort("页面" + page + "不存在");
+            return;
+        }
+        if (keepOnly) {
+            PageInit.getInstance().finishOtherActivity(clazz);
+        }
+        if (PageInit.getInstance().isHas(clazz) && forbiddenRepeat) {
+            return;
+        }
+        try {
+            Intent intent;
+            intent = new Intent(activity, clazz);
+            intent.putExtras(getBundle());
+            intent.setFlags(flags);
+
+            ActivityResultContracts.StartActivityForResult contract;
+            contract = new ActivityResultContracts.StartActivityForResult();
+
+            activity.registerForActivityResult(contract, callback)
+                    .launch(intent, optionsCompat);
+        } catch (Exception e) {
+            ToastUtils.showShort(activity.getClass().getCanonicalName() + "页面跳转失败");
+            e.printStackTrace();
+        }
+
     }
 
     public class Navigation {
@@ -211,8 +250,14 @@ public class PageManager {
             return this;
         }
 
+        @Deprecated
         public Navigation setOptions(Bundle bundle) {
             options = bundle;
+            return this;
+        }
+
+        public Navigation setOptions(ActivityOptionsCompat options){
+            optionsCompat = options;
             return this;
         }
 
@@ -241,9 +286,13 @@ public class PageManager {
             PageManager.this.navigation(context);
         }
 
+        @Deprecated
         public void navigation(Activity activity, int requestCode) {
             PageManager.this.navigation(activity, requestCode);
         }
 
+        public void navigation(RxAppCompatActivity activity, ActivityResultCallback<ActivityResult> callback) {
+            PageManager.this.navigation(activity, callback);
+        }
     }
 }
