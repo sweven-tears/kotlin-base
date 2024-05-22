@@ -29,15 +29,15 @@ import pers.sweven.common.app.BaseApplication;
 public final class ToastUtils {
 
     private static final int DEFAULT_COLOR = 0x12000000;
-    private static Toast sToast;
-    private static int gravity         = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-    private static int xOffset         = 0;
-    private static int yOffset         = (int) (64 * BaseApplication.getContext().getResources().getDisplayMetrics().density + 0.5);
-    private static int backgroundColor = DEFAULT_COLOR;
-    private static int bgResource      = -1;
-    private static int messageColor    = DEFAULT_COLOR;
-    private static WeakReference<View> sViewWeakReference;
     private static final Handler sHandler = new Handler(Looper.getMainLooper());
+    private static Toast sToast;
+    private static int gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+    private static int xOffset = 0;
+    private static int yOffset = (int) (64 * BaseApplication.getContext().getResources().getDisplayMetrics().density + 0.5);
+    private static int backgroundColor = DEFAULT_COLOR;
+    private static int bgResource = -1;
+    private static int messageColor = DEFAULT_COLOR;
+    private static WeakReference<View> sViewWeakReference;
 
     private ToastUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
@@ -56,10 +56,26 @@ public final class ToastUtils {
         ToastUtils.yOffset = yOffset;
     }
 
-    public static void setDefaultGravity(){
+    public static void setDefaultGravity() {
         ToastUtils.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
         ToastUtils.xOffset = 0;
         ToastUtils.yOffset = (int) (64 * BaseApplication.getContext().getResources().getDisplayMetrics().density + 0.5);
+    }
+
+    /**
+     * 获取吐司view
+     *
+     * @return view
+     */
+    public static View getView() {
+        if (sViewWeakReference != null) {
+            final View view = sViewWeakReference.get();
+            if (view != null) {
+                return view;
+            }
+        }
+        if (sToast != null) return sToast.getView();
+        return null;
     }
 
     /**
@@ -79,22 +95,6 @@ public final class ToastUtils {
      */
     public static void setView(@Nullable View view) {
         sViewWeakReference = view == null ? null : new WeakReference<>(view);
-    }
-
-    /**
-     * 获取吐司view
-     *
-     * @return view
-     */
-    public static View getView() {
-        if (sViewWeakReference != null) {
-            final View view = sViewWeakReference.get();
-            if (view != null) {
-                return view;
-            }
-        }
-        if (sToast != null) return sToast.getView();
-        return null;
     }
 
     /**
@@ -130,11 +130,9 @@ public final class ToastUtils {
      * @param text 文本
      */
     public static void showShortSafe(final CharSequence text) {
-        sHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                show(text, Toast.LENGTH_SHORT);
-            }
+        Context this0 = BaseApplication.getContext();
+        sHandler.post(() -> {
+            show(this0, text, Toast.LENGTH_SHORT);
         });
     }
 
@@ -170,15 +168,22 @@ public final class ToastUtils {
     /**
      * 安全地显示短时吐司
      *
-     * @param format 格式
+     * @param text 格式
      * @param args   参数
      */
-    public static void showShortSafe(final String format, final Object... args) {
+    public static void showShortSafe(final String text, final Object... args) {
         sHandler.post(new Runnable() {
             @Override
             public void run() {
-                show(format, Toast.LENGTH_SHORT, args);
+                show(BaseApplication.getContext(), text, Toast.LENGTH_SHORT, args);
             }
+        });
+    }
+
+    public static void showShortSafe(Context context, final String text, final Object... args) {
+        Context this0 = context == null ? BaseApplication.getContext() : context;
+        sHandler.post(() -> {
+            show(this0, text, Toast.LENGTH_SHORT, args);
         });
     }
 
@@ -235,7 +240,7 @@ public final class ToastUtils {
         sHandler.post(new Runnable() {
             @Override
             public void run() {
-                show(format, Toast.LENGTH_LONG, args);
+                show(BaseApplication.getContext(), format, Toast.LENGTH_LONG, args);
             }
         });
     }
@@ -249,6 +254,10 @@ public final class ToastUtils {
         show(text, Toast.LENGTH_SHORT);
     }
 
+    public static void showShort(Context context, CharSequence text) {
+        show(context == null ? BaseApplication.getContext() : context, text, Toast.LENGTH_SHORT);
+    }
+
     /**
      * 显示短时吐司
      *
@@ -256,6 +265,10 @@ public final class ToastUtils {
      */
     public static void showShort(@StringRes int resId) {
         show(resId, Toast.LENGTH_SHORT);
+    }
+
+    public static void showShort(Context context, @StringRes int resId) {
+        show(context, context.getResources().getString(resId), Toast.LENGTH_SHORT);
     }
 
     /**
@@ -275,7 +288,7 @@ public final class ToastUtils {
      * @param args   参数
      */
     public static void showShort(String format, Object... args) {
-        show(format, Toast.LENGTH_SHORT, args);
+        show(BaseApplication.getContext(), format, Toast.LENGTH_SHORT, args);
     }
 
     /**
@@ -313,7 +326,7 @@ public final class ToastUtils {
      * @param args   参数
      */
     public static void showLong(String format, Object... args) {
-        show(format, Toast.LENGTH_LONG, args);
+        show(BaseApplication.getContext(), format, Toast.LENGTH_LONG, args);
     }
 
     /**
@@ -382,8 +395,8 @@ public final class ToastUtils {
      * @param duration 显示时长
      * @param args     参数
      */
-    private static void show(String format, int duration, Object... args) {
-        show(String.format(format, args), duration);
+    private static void show(Context context, String format, int duration, Object... args) {
+        show(context, String.format(format, args), duration);
     }
 
     /**
@@ -393,12 +406,23 @@ public final class ToastUtils {
      * @param duration 显示时长
      */
     private static void show(CharSequence text, int duration) {
+        show(BaseApplication.getContext(), text.toString(), duration);
+    }
+
+    /**
+     * 显示(base)
+     *
+     * @param context  上下文
+     * @param text     发短信
+     * @param duration 期间
+     */
+    private static void show(Context context, CharSequence text, int duration) {
         cancel();
         boolean isCustom = false;
         if (sViewWeakReference != null) {
             final View view = sViewWeakReference.get();
             if (view != null) {
-                sToast = new Toast(BaseApplication.getContext());
+                sToast = new Toast(context);
                 sToast.setView(view);
                 sToast.setDuration(duration);
                 isCustom = true;
@@ -409,9 +433,9 @@ public final class ToastUtils {
                 SpannableString spannableString = new SpannableString(text);
                 ForegroundColorSpan colorSpan = new ForegroundColorSpan(messageColor);
                 spannableString.setSpan(colorSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                sToast = Toast.makeText(BaseApplication.getContext(), spannableString, duration);
+                sToast = Toast.makeText(context, spannableString, duration);
             } else {
-                sToast = Toast.makeText(BaseApplication.getContext(), text, duration);
+                sToast = Toast.makeText(context, text, duration);
             }
         }
         View view = sToast.getView();

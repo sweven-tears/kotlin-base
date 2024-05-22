@@ -32,6 +32,7 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        onCreateSelf(savedInstanceState)
         loadingDialog = initLoadingDialog()
         activity = this
         var extras = intent.extras
@@ -44,6 +45,9 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
         initView()
         initObservable(model!!)
         Thread(this::doBusiness).start()
+    }
+
+    open fun onCreateSelf(savedInstanceState: Bundle?) {
     }
 
     open fun registerLayout() {
@@ -59,7 +63,7 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
         getBundle(extras)
     }
 
-    private fun initViewModel(): VM? {
+    open fun initViewModel(): VM? {
         var vm: VM? = null
         try {
             val p = javaClass.genericSuperclass as ParameterizedType?

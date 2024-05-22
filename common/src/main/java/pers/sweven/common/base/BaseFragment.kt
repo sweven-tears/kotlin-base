@@ -42,7 +42,12 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
         } else {
             DataBindingUtil.inflate(inflater, layout, container, false)
         }
+        onCreateSelf(savedInstanceState)
         return binding?.root
+    }
+
+    protected open fun onCreateSelf(savedInstanceState: Bundle?) {
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

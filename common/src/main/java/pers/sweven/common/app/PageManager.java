@@ -5,14 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.core.app.ActivityOptionsCompat;
 
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -25,12 +24,12 @@ import pers.sweven.common.utils.ToastUtils;
  */
 public class PageManager {
     private final LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-    protected Class<?> clazz;
-    protected String page;
-    private int flags;
+    public Class<?> clazz;
+    public String page;
+    public int flags;
     @Deprecated
-    private Bundle options;
-    private ActivityOptionsCompat optionsCompat;
+    public Bundle options;
+    public ActivityOptionsCompat optionsCompat;
     private boolean forbiddenRepeat;
     private boolean keepOnly;
 
@@ -143,7 +142,7 @@ public class PageManager {
         }
     }
 
-    public void navigation(RxAppCompatActivity activity, ActivityResultCallback<ActivityResult> callback) {
+    public void navigation(RxAppCompatActivity activity, ActivityResultLauncher<Intent> launcher) {
         if (clazz == null) {
             ToastUtils.showShort("页面" + page + "不存在");
             return;
@@ -160,17 +159,44 @@ public class PageManager {
             intent.putExtras(getBundle());
             intent.setFlags(flags);
 
-            ActivityResultContracts.StartActivityForResult contract;
-            contract = new ActivityResultContracts.StartActivityForResult();
-
-            activity.registerForActivityResult(contract, callback)
-                    .launch(intent, optionsCompat);
+            if (launcher == null) {
+                throw new Exception("launcher不能为空");
+            }
+            launcher.launch(intent, optionsCompat);
         } catch (Exception e) {
-            ToastUtils.showShort(activity.getClass().getCanonicalName() + "页面跳转失败");
+            ToastUtils.showShort(page + "页面跳转失败");
             e.printStackTrace();
         }
 
     }
+
+    public <I> void navigation(RxAppCompatActivity activity, PageInput<I> input, ActivityResultLauncher<I> launcher) {
+        if (clazz == null) {
+            ToastUtils.showShort("页面" + page + "不存在");
+            return;
+        }
+        if (keepOnly) {
+            PageInit.getInstance().finishOtherActivity(clazz);
+        }
+        if (PageInit.getInstance().isHas(clazz) && forbiddenRepeat) {
+            return;
+        }
+        try {
+            Intent intent;
+            intent = new Intent(activity, clazz);
+            intent.putExtras(getBundle());
+            intent.setFlags(flags);
+            if (launcher == null) {
+                throw new Exception("launcher不能为空");
+            }
+            launcher.launch(input.consume(this), optionsCompat);
+        } catch (Exception e) {
+            ToastUtils.showShort(page + "页面跳转失败");
+            e.printStackTrace();
+        }
+
+    }
+
 
     public class Navigation {
         /**
@@ -234,6 +260,11 @@ public class PageManager {
             return this;
         }
 
+        public Navigation withStringArrayList(String key, ArrayList<String> list){
+            map.put(key, list);
+            return this;
+        }
+
         public Navigation withSerializable(String key, Serializable value) {
             map.put(key, value);
             return this;
@@ -256,7 +287,7 @@ public class PageManager {
             return this;
         }
 
-        public Navigation setOptions(ActivityOptionsCompat options){
+        public Navigation setOptions(ActivityOptionsCompat options) {
             optionsCompat = options;
             return this;
         }
@@ -291,8 +322,12 @@ public class PageManager {
             PageManager.this.navigation(activity, requestCode);
         }
 
-        public void navigation(RxAppCompatActivity activity, ActivityResultCallback<ActivityResult> callback) {
+        public void navigation(RxAppCompatActivity activity, ActivityResultLauncher<Intent> callback) {
             PageManager.this.navigation(activity, callback);
+        }
+
+        public <I> void navigation(RxAppCompatActivity activity, PageInput<I> input, ActivityResultLauncher<I> callback) {
+            PageManager.this.navigation(activity, input, callback);
         }
     }
 }

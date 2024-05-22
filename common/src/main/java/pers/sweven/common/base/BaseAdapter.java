@@ -23,9 +23,9 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     private final List<T> list = new ArrayList<>();
     private final int layoutId;
     private final Map<Integer, OnAdapterViewClick<T>> onViewClickMap = new HashMap<>();
-    private OnAdapterViewClick<T> onItemViewClick;
     // 方式二
     private final Map<Integer, OnAdapterClick<T>> onClickMap = new HashMap<>();
+    private OnAdapterViewClick<T> onItemViewClick;
     private OnAdapterClick<T> onItemClick;
 
     public BaseAdapter(int layoutId) {
@@ -69,6 +69,19 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
                 return;
             }
         }
+    }
+
+    public void refreshData(T data) {
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (list.get(i).equals(data)) {
+                notifyItemChanged(i, 0);
+                return;
+            }
+        }
+    }
+
+    public void refreshData(int index) {
+        notifyItemChanged(index, 0);
     }
 
     public void removeDataAt(int position) {
@@ -149,6 +162,10 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
         holder.itemView.setTag(holder);
         onData(holder.binding, data);
         onData(holder.binding, data, position);
+        onData(holder, data);
+    }
+
+    protected void onData(BaseViewHolder<R> holder, T data) {
     }
 
     protected void onData(R binding, T data) {
@@ -178,6 +195,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     /**
      * 后续版本将删除该构建
      */
+    @Deprecated
     public interface OnAdapterClick<T> {
         void onClick(int position, T data);
     }

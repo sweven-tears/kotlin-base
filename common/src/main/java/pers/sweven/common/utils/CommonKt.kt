@@ -9,9 +9,8 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
-import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import java.util.*
 
 /**
  * Created by Sweven on 2023/6/9.
@@ -37,13 +36,15 @@ fun Int.toColor(context: Context): Int {
 fun TabLayout?.initTab(
     titles: List<String>,
     onTabSelected: ((tab: TabLayout.Tab?, title: String, selected: Boolean) -> Unit)? = null,
-    initTab: ((TabLayout) -> Boolean)? = null
+    icons: List<Drawable?>? = null,
+    initTab: ((TabLayout) -> Boolean)? = null,
 ) {
     this?.apply {
-        titles.forEach {
+        titles.forEachIndexed { index, it ->
             if (initTab?.invoke(this) != true) {
                 val newTab = newTab()
                 newTab.text = it
+                newTab.icon = icons?.get(index)
                 addTab(newTab)
             }
         }
@@ -71,6 +72,13 @@ fun TabLayout?.setCurrentTab(index: Int) {
     }
 }
 
+fun TabLayout?.getCurrentTab(): TabLayout.Tab? {
+    if (this == null) {
+        return null
+    }
+    return getTabAt(selectedTabPosition)
+}
+
 /**
  * 添加enter侦听器
  * @param [actionId] 操作id
@@ -80,10 +88,10 @@ fun TabLayout?.setCurrentTab(index: Int) {
 fun EditText.addEnterListener(
     actionId: Int = EditorInfo.IME_ACTION_DONE,
     tvSearch: TextView? = null,
-    listener: (View) -> Boolean
+    listener: (View) -> Boolean,
 ) {
     setOnEditorActionListener { v, id, event ->
-        if (id == actionId || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
+        if (id == actionId || (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP)) {
             return@setOnEditorActionListener listener.invoke(v)
         }
         return@setOnEditorActionListener false
@@ -103,20 +111,40 @@ fun TextView.drawables(): Array<Drawable> {
     return compoundDrawables
 }
 
+/**
+ * 点击查看
+ * @param [listener] 听者
+ */
 fun View?.onClickView(listener: (View) -> Unit) {
     Utils.onClickView(listener, this)
 }
 
+/**
+ * 批量点击查看设置
+ * @param [listener] 听者
+ */
 fun <T : View> Array<T>?.onClickView(listener: (View) -> Unit) {
     if (this != null) {
         Utils.onClickView(listener, *this)
     }
 }
 
+/**
+ * java的[Bolean]?block:block
+ * @param [true] 为真时参数
+ * @param [false] 为假时参数
+ * @return [T]
+ */
 fun <T> Boolean?.ifElse(`true`: T, `false`: T = `true`): T {
     return if (this == true) `true` else `false`
 }
 
+/**
+ * 当参数为null输出[def],否则输出参数本身
+ * 平替  String?:""=>改成通用参数
+ * @param [def] 空返回值
+ * @return [T]
+ */
 fun <T> T?.ifNull(def: T): T {
     if (this == null) {
         return def
@@ -124,43 +152,83 @@ fun <T> T?.ifNull(def: T): T {
     return this
 }
 
-fun <T> T?.ifNullEmpty(isNull: T): T {
+/**
+ * 是否==nullOrEmpty
+ * @param [null] 定义空值
+ * @return [Boolean]
+ */
+fun <T> T?.isNullEmpty(`null`: T? = null): Boolean {
+    return this == null || this == `null`
+}
+
+/**
+ * 如果 ==nullOrEmpty
+ * @param [nullDef] 为空时默认返回值
+ * @param [nulls] 以下值皆定义为空值
+ * @return [T]
+ */
+fun <T> T?.ifNullEmpty(nullDef: T, vararg nulls: T): T {
     if (this == null) {
-        return isNull
+        return nullDef
+    }
+    if (nulls.isNotEmpty()) {
+        nulls.forEach {
+            if (this == it) {
+                return nullDef
+            }
+        }
+        return this
     }
     if (this is String) {
         if (this.isEmpty()) {
-            return isNull
+            return nullDef
         }
     } else if (this is Int) {
         if (this == 0) {
-            return isNull
+            return nullDef
         }
     } else if (this is Number) {
         if (this == 0) {
-            return isNull
+            return nullDef
         }
     } else if (this is List<*>) {
         if (this.isEmpty()) {
-            return isNull
+            return nullDef
         }
     } else if (this is ArrayList<*>) {
         if (this.isEmpty()) {
-            return isNull
+            return nullDef
         }
     } else if (this is Map<*, *>) {
         if (this.isEmpty()) {
-            return isNull
+            return nullDef
         }
     } else if (this is Set<*>) {
         if (this.isEmpty()) {
-            return isNull
+            return nullDef
         }
     }
     return this
 }
 
+/**
+ * 解析整数
+ * @param [def] 定义
+ * @return [Int]
+ */
 fun String?.parseInt(def: Int = 0): Int {
     val number = NumberUtils.parseInt(this)
     return if (number == 0) def else number
 }
+
+fun String?.parseDouble(def: Double = 0.0): Double {
+    val double = NumberUtils.parseDouble(this)
+    return if (double == 0.0) def else double
+}
+
+fun TextView?.setRichText(text:String){
+    if(this != null){
+        Utils.setRichText(this,text)
+    }
+}
+

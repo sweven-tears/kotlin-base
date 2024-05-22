@@ -46,7 +46,7 @@ abstract class BaseDialogFragment<T : ViewDataBinding, VM : BaseViewModel>(val l
         Thread(this::doBusiness).start()
     }
 
-    private fun initViewModel(): VM? {
+    open fun initViewModel(): VM? {
         var vm: VM? = null
         try {
             val superclass = javaClass.genericSuperclass as ParameterizedType?

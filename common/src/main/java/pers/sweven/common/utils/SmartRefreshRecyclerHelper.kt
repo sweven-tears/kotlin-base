@@ -19,7 +19,7 @@ package pers.sweven.common.utils
 // */
 //class SmartRefreshRecyclerHelper(val smartRefreshLayout: SmartRefreshLayout) {
 //    private val context = smartRefreshLayout.context
-//    private val relativeLayout: RelativeLayout = smartRefreshLayout.findViewById(R.id.smartLayout)
+//    private val relativeLayout: RelativeLayout = smartRefreshLayout.findViewById(R.id.smartRelativeLayout)
 //    var recyclerView: RecyclerView? = null
 //    var tvTips: TextView? = null
 //    var includeNoData: View? = null

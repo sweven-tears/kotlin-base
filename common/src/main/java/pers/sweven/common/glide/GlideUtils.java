@@ -19,6 +19,8 @@ import androidx.annotation.RawRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
@@ -33,6 +35,8 @@ import com.bumptech.glide.request.target.Target;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import pers.sweven.common.glide.transform.BlurTransformation;
 import pers.sweven.common.glide.transform.CircleTransformation;
@@ -61,6 +65,11 @@ public class GlideUtils {
     private GlideUtils(Context context, ImageView iv) {
         this.context = context;
         this.iv = iv;
+    }
+
+    @SuppressLint("VisibleForTests")
+    public static void init(Context context, int logLevel){
+        GlideApp.init(context, new GlideBuilder().setLogLevel(logLevel));
     }
 
     public static GlideUtils with(Context context) {
@@ -157,6 +166,7 @@ public class GlideUtils {
         }
 
         if (onGlideListener != null) {
+
             load.addListener(new RequestListener<Drawable>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -307,5 +317,143 @@ public class GlideUtils {
     public GlideUtils setOnGlideListener(OnGlideListener onGlideListener) {
         this.onGlideListener = onGlideListener;
         return this;
+    }
+
+    public BitmapFactory asBitmap() {
+        return new BitmapFactory(this);
+    }
+
+    public class BitmapFactory {
+        private Object loadObj;
+        private ImageView imageView;
+        private Integer width = null;
+        private Integer height = null;
+
+        public BitmapFactory(GlideUtils utils) {
+
+        }
+
+        public BitmapFactory load(Object module) {
+            loadObj = module;
+            return this;
+        }
+
+        public BitmapFactory submit(int width, int height) {
+            this.width = width;
+            this.height = height;
+            return this;
+        }
+
+        public Bitmap get() throws ExecutionException, InterruptedException {
+            if (width == null || height == null) {
+                return null;
+            }
+            return Optional.of(GlideApp.with(context))
+                    .map(GlideRequests::asBitmap)
+                    .map(request -> {
+                        if (placeholder > 0) {
+                            return request.placeholder(placeholder);
+                        } else {
+                            return request;
+                        }
+                    })
+                    .map(request -> {
+                        if (options != null) {
+                            return request.apply(options);
+                        } else {
+                            return request;
+                        }
+                    })
+                    .map(request -> {
+                        if (circle) {
+                            return request.circleCrop();
+                        } else if (roundedCorner > 0) {
+                            return request.transform(new RoundTransformation(roundedCorner));
+                        } else return request;
+                    })
+                    .map(request -> {
+                        if (loadObj != null) {
+                            return request.load(loadObj);
+                        } else {
+                            return request;
+                        }
+                    })
+                    .map(request -> {
+                        if (skipMemoryCache) {
+                            return request.skipMemoryCache(skipMemoryCache);
+                        } else {
+                            return request;
+                        }
+                    })
+                    .map(request -> {
+                        if (strategy != null) {
+                            return request.diskCacheStrategy(strategy);
+                        } else {
+                            return request;
+                        }
+                    })
+                    .get()
+                    .submit(width,height)
+                    .get();
+        }
+
+        public void into(ImageView imageView) {
+            this.imageView = imageView;
+            into();
+        }
+
+        public void into() {
+            if (imageView == null) {
+                Log.e("GlideUtils", "imageView can't is null");
+                return;
+            }
+            Optional.of(GlideApp.with(context))
+                    .map(GlideRequests::asBitmap)
+                    .map(request -> {
+                        if (placeholder > 0) {
+                            return request.placeholder(placeholder);
+                        } else {
+                            return request;
+                        }
+                    })
+                    .map(request -> {
+                        if (options != null) {
+                            return request.apply(options);
+                        } else {
+                            return request;
+                        }
+                    })
+                    .map(request -> {
+                        if (circle) {
+                            return request.circleCrop();
+                        } else if (roundedCorner > 0) {
+                            return request.transform(new RoundTransformation(roundedCorner));
+                        } else return request;
+                    })
+                    .map(request -> {
+                        if (loadObj != null) {
+                            return request.load(loadObj);
+                        } else {
+                            return request;
+                        }
+                    })
+                    .map(request -> {
+                        if (skipMemoryCache) {
+                            return request.skipMemoryCache(skipMemoryCache);
+                        } else {
+                            return request;
+                        }
+                    })
+                    .map(request -> {
+                        if (strategy != null) {
+                            return request.diskCacheStrategy(strategy);
+                        } else {
+                            return request;
+                        }
+                    })
+                    .get()
+                    .into(imageView);
+        }
+
     }
 }

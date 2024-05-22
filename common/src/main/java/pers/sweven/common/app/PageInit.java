@@ -82,6 +82,9 @@ public class PageInit implements Application.ActivityLifecycleCallbacks {
     }
 
     public <T> void finishOtherActivity(Class<T> clazz) {
+        if (activities == null) {
+            return;
+        }
         for (Activity activity : activities) {
             if (activity.getClass() != clazz) {
                 if (activity.isFinishing()) {
@@ -94,6 +97,9 @@ public class PageInit implements Application.ActivityLifecycleCallbacks {
     }
 
     public <T> void finishSameActivity(Class<T> tClass) {
+        if (activities == null) {
+            return;
+        }
         boolean first = true;
         for (int i = activities.size() - 1; i >= 0; i--) {
             Activity activity = activities.get(i);
@@ -111,6 +117,9 @@ public class PageInit implements Application.ActivityLifecycleCallbacks {
     }
 
     public <T> boolean isCurrentActivity(Class<T> tClass) {
+        if (activities == null) {
+            return false;
+        }
         if (activities.size() > 0) {
             int last = activities.size() - 1;
             return activities.get(last).getClass() == tClass;
@@ -118,7 +127,10 @@ public class PageInit implements Application.ActivityLifecycleCallbacks {
         return false;
     }
 
-    public <T> boolean isHas(Class<T> tClass){
+    public <T> boolean isHas(Class<T> tClass) {
+        if (activities == null) {
+            return false;
+        }
         for (int i = activities.size() - 1; i >= 0; i--) {
             if (activities.get(i).getClass() == tClass) {
                 return true;
