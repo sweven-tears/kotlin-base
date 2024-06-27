@@ -66,6 +66,19 @@ public class RxUtil {
                 .compose(bindToLifecycle(viewModel.getProvider()));
     }
 
+    public static <T> ObservableTransformer<T, T> applySchedulers(BaseViewModel viewModel, boolean showLoading,boolean alwaysLoading) {
+        return observable -> observable.subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable -> {
+                    if (showLoading) viewModel.getShowLoading().setValue(true);
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+                    if (showLoading && !alwaysLoading) viewModel.getShowLoading().setValue(false);
+                })
+                .compose(bindToLifecycle(viewModel.getProvider()));
+    }
+
     /**
      * RxJava处理线程调度
      *

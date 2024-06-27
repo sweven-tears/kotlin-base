@@ -1,6 +1,7 @@
 package pers.sweven.common.utils
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.view.KeyEvent
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.google.android.material.tabs.TabLayout
+import java.math.BigDecimal
 import java.util.*
 
 /**
@@ -26,6 +28,10 @@ open class CommonKt
 @ColorInt
 fun Int.toColor(context: Context): Int {
     return ContextCompat.getColor(context, this)
+}
+
+fun Int.toColorStateList(context: Context): ColorStateList? {
+    return ContextCompat.getColorStateList(context, this)
 }
 
 /**
@@ -162,10 +168,10 @@ fun <T> T?.isNullEmpty(`null`: T? = null): Boolean {
 }
 
 /**
- * 如果 ==nullOrEmpty
+ * null时直接返回 [nullDef] ,否则进行 [nulls] 判断，没有[nulls]时进行基础空值判断
  * @param [nullDef] 为空时默认返回值
- * @param [nulls] 以下值皆定义为空值
- * @return [T]
+ * @param [nulls] 以下值皆定义为空值,有值时仅判断当前值
+ * @return [T] 返回 [nullDef]
  */
 fun <T> T?.ifNullEmpty(nullDef: T, vararg nulls: T): T {
     if (this == null) {
@@ -203,6 +209,42 @@ fun <T> T?.ifNullEmpty(nullDef: T, vararg nulls: T): T {
         if (this.isEmpty()) {
             return nullDef
         }
+    } else if (this is Array<*>) {
+        if (this.isEmpty()) {
+            return nullDef
+        }
+    } else if (this is IntArray) {
+        if (this.isEmpty()) {
+            return nullDef
+        }
+    } else if (this is BooleanArray) {
+        if (this.isEmpty()) {
+            return nullDef
+        }
+    } else if (this is ByteArray) {
+        if (this.isEmpty()) {
+            return nullDef
+        }
+    } else if (this is FloatArray) {
+        if (this.isEmpty()) {
+            return nullDef
+        }
+    } else if (this is DoubleArray) {
+        if (this.isEmpty()) {
+            return nullDef
+        }
+    } else if (this is LongArray) {
+        if (this.isEmpty()) {
+            return nullDef
+        }
+    } else if (this is ShortArray) {
+        if (this.isEmpty()) {
+            return nullDef
+        }
+    } else if (this is CharArray) {
+        if (this.isEmpty()) {
+            return nullDef
+        }
     } else if (this is Set<*>) {
         if (this.isEmpty()) {
             return nullDef
@@ -221,14 +263,26 @@ fun String?.parseInt(def: Int = 0): Int {
     return if (number == 0) def else number
 }
 
-fun String?.parseDouble(def: Double = 0.0): Double {
-    val double = NumberUtils.parseDouble(this)
+fun String?.parseDouble(
+    def: Double = 0.0,
+    newScale: Int = -1,
+    @NumberUtils.RoundingMode roundingMode: Int = BigDecimal.ROUND_HALF_UP
+): Double {
+    val double = if (newScale > -1) {
+        NumberUtils.parseDouble(this, newScale, roundingMode)
+    } else {
+        NumberUtils.parseDouble(this)
+    }
     return if (double == 0.0) def else double
 }
 
-fun TextView?.setRichText(text:String){
-    if(this != null){
-        Utils.setRichText(this,text)
+fun TextView?.setRichText(text: String) {
+    if (this != null) {
+        Utils.setRichText(this, text)
     }
+}
+
+fun String?.toRichText(): CharSequence {
+    return Utils.toRichText(this) ?: ""
 }
 

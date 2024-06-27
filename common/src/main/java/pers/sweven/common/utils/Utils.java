@@ -9,10 +9,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.util.StateSet;
 import android.util.TypedValue;
@@ -23,15 +22,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.StringDef;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -92,6 +92,63 @@ public class Utils {
         helper.build();
     }
 
+    /**
+     * 转富文本<br/>
+     * example:46541^size:2.4;font:D-DIN;bold:1|\n供应商已采购药店^strikethrough:1
+     *
+     * @param charSequence char 序列
+     * @return {@link Spanned}
+     */
+    public static Spanned toRichText(String charSequence) {
+        if (charSequence == null) {
+            return null;
+        }
+        // 46541^size:2.4;font:D-DIN;bold:1|\n供应商已采购药店
+        // 多个段落样式分组
+        String[] wordsGroup = charSequence.split("\\|");//["46541^size:2.4;font:D-DIN;bold:1","\n供应商已采购药店"]
+        TextViewHelper helper = new TextViewHelper();
+        for (String words : wordsGroup) {
+            // 文本和样式分组
+            String[] styles = words.split("\\^");//["46541","size:2.4;font:D-DIN;bold:1"]
+            String text = styles[0];// 获取文本
+
+            // 提取样式
+            TextViewStyle textViewStyle = new TextViewStyle();
+            if (styles.length > 1) {
+                // 多个样式分组
+                String[] textStyles = styles[1].split(";");//["size:2.4","font:D-DIN","bold:1"]
+                for (String textStyle : textStyles) {
+                    // 样式名称键值分组
+                    String[] styleValue = textStyle.split(":");//["size","2.4"]
+                    String key = styleValue[0];//"size"
+                    if (styleValue.length > 1) {
+                        String value = styleValue[1];
+                        if ("color".equals(key)) {// 颜色赋值
+                            textViewStyle.setTextColor(Color.parseColor(value));
+                        } else if ("size".equals(key)) {// 字体大小赋值
+                            textViewStyle.setTextSize(new TextSize(NumberUtils.parseFloat(value)));
+                        } else if ("font".equals(key)) {// 字体赋值
+                            Log.e("Utils", "字体样式请自定义");
+                        } else if ("bold".equals(key)) {// 字体粗细赋值
+                            StyleSpan bold = new StyleSpan(Typeface.BOLD);
+                            StyleSpan normal = new StyleSpan(Typeface.NORMAL);
+                            StyleSpan italic = new StyleSpan(Typeface.ITALIC);
+                            textViewStyle.setSpan("1".equals(value) ? bold : "2".equals(value) ? italic : normal);
+                        } else if ("strikethrough".equals(key)) {// 删除线添加
+                            textViewStyle.setStrikethrough("1".equals(value));
+                        }
+                    }
+                }
+            }
+
+            // 赋予文本和样式
+            helper.addText(text, textViewStyle);
+        }
+        // 文本、样式渲染
+        return helper.generateSpanner();
+    }
+
+
     public static boolean hiddenKeyboard(Context context, View v) {
         if (v == null) {
             return false;
@@ -103,7 +160,7 @@ public class Utils {
         }
         return false;
     }
-    
+
     /**
      * 根据EditText所在坐标和用户点击的坐标相对比，来判断是否隐藏键盘，因为当用户点击EditText时则不能隐藏
      *
@@ -351,8 +408,9 @@ public class Utils {
 
     /**
      * 着色器
+     *
      * @param drawable 需要着色的对象
-     * @param color 颜色
+     * @param color    颜色
      */
     public static void tintColor(Drawable drawable, @ColorInt int color) {
         tintColor(drawable, color, 0);
@@ -360,8 +418,9 @@ public class Utils {
 
     /**
      * 着色器
-     * @param drawable 需要着色的图像
-     * @param color 颜色
+     *
+     * @param drawable   需要着色的图像
+     * @param color      颜色
      * @param pressColor 实现简单的按压变换着色，下压的颜色
      */
     public static void tintColor(Drawable drawable, @ColorInt int color, @ColorInt int pressColor) {
@@ -375,5 +434,49 @@ public class Utils {
         int[][] selector = new int[][]{new int[]{android.R.attr.state_pressed}, StateSet.WILD_CARD};
         ColorStateList stateList = new ColorStateList(selector, new int[]{pressColor, color});
         DrawableCompat.setTintList(drawable.mutate(), stateList);
+    }
+
+    //------------------------------------------------------------------------------
+
+    public static String getRandomChinese(int length) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            builder.append(getRandomChinese());
+        }
+        return builder.toString();
+    }
+
+    private static String getRandomChinese() {
+        boolean simple = true;
+        if (!simple) {
+            char c = (char) (0x4e00 + (int) (Math.random() * (0x9fa5 - 0x4e00 + 1)));
+            return String.valueOf(c);
+        }
+        String str = "";
+        int hightPos;
+        int lowPos;
+        Random random = new Random();
+        hightPos = (176 + Math.abs(random.nextInt(39)));
+        lowPos = (161 + Math.abs(random.nextInt(93)));
+        byte[] b = new byte[2];
+        b[0] = (Integer.valueOf(hightPos)).byteValue();
+        b[1] = (Integer.valueOf(lowPos)).byteValue();
+        str = new String(b, Charset.forName("GBK"));
+        return str;
+    }
+
+    public static String random(int length) {
+        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        return random(length, str);
+    }
+
+    public static String random(int length, String str) {
+        Random random = new Random();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(str.length());
+            builder.append(str.charAt(index));
+        }
+        return builder.toString();
     }
 }

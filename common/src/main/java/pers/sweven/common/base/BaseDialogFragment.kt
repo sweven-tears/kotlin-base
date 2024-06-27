@@ -30,7 +30,11 @@ abstract class BaseDialogFragment<T : ViewDataBinding, VM : BaseViewModel>(val l
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, layoutId, null, false)
+        onCreatedSelf(savedInstanceState)
         return binding.root
+    }
+
+    open fun onCreatedSelf(savedInstanceState: Bundle?) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

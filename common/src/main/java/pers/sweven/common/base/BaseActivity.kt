@@ -7,6 +7,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -171,7 +172,7 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (ev?.action == MotionEvent.ACTION_DOWN) {
             val view = currentFocus
-            if (Utils.isShouldHideKeyboard(view, ev) && mustCloseKeyboard) {
+            if (Utils.isShouldHideKeyboard(view, ev) && mustClose(view)) {
                 Utils.hiddenKeyboard(this, view)
             }
         }
@@ -179,6 +180,12 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
     }
 
     var mustCloseKeyboard = true
+
+    open fun mustClose(view: View?):Boolean{
+        return mustCloseKeyboard && !notMustCloseKeyboardViews.contains(view)
+    }
+
+    var notMustCloseKeyboardViews = arrayListOf<View>()
 
     override fun onConfigurationChanged(newConfig: Configuration) { //字体大小处理
         if (newConfig.fontScale != 1f) //非默认值
