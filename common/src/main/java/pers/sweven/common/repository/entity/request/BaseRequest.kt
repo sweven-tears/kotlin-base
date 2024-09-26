@@ -56,6 +56,47 @@ open class BaseRequest() {
         return true
     }
 
+    open fun toAnyMap(): HashMap<String, Any?>{
+        val fields = javaClass.declaredFields
+        val map = hashMapOf<String, Any?>()
+        fields.forEachIndexed { index, field ->
+            addAnyMap(field, map)
+        }
+        return map
+    }
+
+
+    open fun addAnyMap(it: Field, map: HashMap<String, Any?>): Boolean {
+        val param = it.getAnnotation(Param::class.java)
+        if (param != null) {
+            if (!param.isAdd) {
+                return false
+            }
+            val name = if (param.value == "") it.name else param.value
+            it.isAccessible = true
+            val get = it.get(this)
+            val value = if (get is MutableLiveData<*>) get.value else it.get(this)
+
+            if (param.noAdd.contains(value.toString())) {
+                return false
+            }
+            map[name] = value
+            return true
+        }
+
+        var name = it.getAnnotation(SerializedName::class.java)?.value ?: ""
+        name = if (name == "") it.name else name
+        it.isAccessible = true
+        val get = it.get(this)
+        val value = if (get is MutableLiveData<*>) {
+            (get.value ?: "").toString()
+        } else {
+            (get ?: "").toString()
+        }
+        map[name] = value
+        return true
+    }
+
     /**
      * 抛出Param定义的可用字段是否为空（desc为描述文本）
      * @return [String?]
@@ -91,6 +132,6 @@ open class BaseRequest() {
         val value: String = "",
         val noAdd: Array<String> = [],
         val isAdd: Boolean = true,
-        val desc: String = ""
+        val desc: String = "",
     )
 }

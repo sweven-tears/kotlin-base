@@ -11,7 +11,9 @@ import androidx.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PageInit implements Application.ActivityLifecycleCallbacks {
     private static PageInit instance;
@@ -85,15 +87,17 @@ public class PageInit implements Application.ActivityLifecycleCallbacks {
         if (activities == null) {
             return;
         }
+
+        Set<Activity> removes = new HashSet<>();
         for (Activity activity : activities) {
             if (activity.getClass() != clazz) {
-                if (activity.isFinishing()) {
-                    activities.remove(activity);
-                } else {
+                if (!activity.isDestroyed()) {
                     activity.finish();
+                    removes.add(activity);
                 }
             }
         }
+        activities.removeAll(removes);
     }
 
     public <T> void finishSameActivity(Class<T> tClass) {
@@ -104,7 +108,7 @@ public class PageInit implements Application.ActivityLifecycleCallbacks {
         for (int i = activities.size() - 1; i >= 0; i--) {
             Activity activity = activities.get(i);
             if (activity.getClass() == tClass) {
-                if (activity.isFinishing()) {
+                if (activity.isDestroyed()) {
                     activities.remove(activity);
                 } else {
                     if (!first) {
@@ -137,6 +141,20 @@ public class PageInit implements Application.ActivityLifecycleCallbacks {
             }
         }
         return false;
+    }
+
+    public void clearAll() {
+        if (activities!= null) {
+            for (Activity activity : activities) {
+                if (!activity.isDestroyed()) {
+                    activity.finish();
+                }
+            }
+            activities.clear();
+        }
+        saveCount = 0;
+        backToFront = false;
+        context = null;
     }
 
     public Context getContext() {

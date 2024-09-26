@@ -399,6 +399,9 @@ public class Utils {
      * @param textView 走马灯效果
      */
     public static void marquee(TextView textView) {
+        if (textView == null) {
+            return;
+        }
         textView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
         textView.setSingleLine();
         textView.setSelected(true);

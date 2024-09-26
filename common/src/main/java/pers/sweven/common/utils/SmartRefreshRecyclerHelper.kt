@@ -33,8 +33,8 @@ abstract class SmartRefreshRecyclerHelper(
     private val context = refreshLayout.getContext()
     private val relativeLayout: RelativeLayout =
         refreshLayout.findViewById(relativeLayoutId) as RelativeLayout
-    var recyclerView: RecyclerView? = null
-    var tvTips: TextView? = null
+    lateinit var recyclerView: RecyclerView
+    var tvTips: TextView
     var includeNoData: View? = null
     var ivNoData: ImageView? = null
     var tvNoData: TextView? = null
@@ -101,18 +101,18 @@ abstract class SmartRefreshRecyclerHelper(
     }
 
     fun setHeadText(text: CharSequence) {
-        tvTips?.post {
-            tvTips?.text = text
+        tvTips.post {
+            tvTips.text = text
             if (text.trim().isNotEmpty()) {
-                tvTips?.visibility = VISIBLE
+                tvTips.visibility = VISIBLE
             } else {
-                tvTips?.visibility = GONE
+                tvTips.visibility = GONE
             }
         }
     }
 
     fun scrollToTop() {
-        val layoutManager = recyclerView?.layoutManager
+        val layoutManager = recyclerView.layoutManager
         if (layoutManager is LinearLayoutManager) {
             layoutManager.scrollToPositionWithOffset(0, 0)
         } else if (layoutManager is GridLayoutManager) {
@@ -124,10 +124,9 @@ abstract class SmartRefreshRecyclerHelper(
         if (refreshEnable && tvTips?.text?.trim()?.isNotEmpty() == true) {
             tvTips?.visibility = if (show) VISIBLE else GONE
         }
-        recyclerView?.visibility = if (show) GONE else VISIBLE
+        recyclerView.visibility = if (show) GONE else VISIBLE
 
-        includeNoData?.visibility =
-            if (show) VISIBLE else GONE
+        includeNoData?.visibility = if (show) VISIBLE else GONE
 
         if (show) {
             ivNoData?.setImageResource(noDataImage)
@@ -140,7 +139,7 @@ abstract class SmartRefreshRecyclerHelper(
             tvTips?.visibility = GONE
         }
 
-        recyclerView?.visibility = GONE
+        recyclerView.visibility = GONE
 
         includeNoData?.visibility = VISIBLE
 
@@ -163,14 +162,20 @@ abstract class SmartRefreshRecyclerHelper(
         return view0
     }
 
-    fun <T> nextPage(
-        pageInfo: Any?,
+    /**
+     * 下一页||  please rewrite this method
+     * @param [page] 页
+     * @param [adapter] 适配器
+     * @param [showHeadTips] 显示头提示
+     * @param [nextPage] 下一页
+     */
+    protected fun <T> nextPage(
+        page: PageEngine<T>?,
         adapter: BaseAdapter<T, *>,
-        showHeadTips: Boolean = false,
+        showHeadTips: Boolean,
         nextPage: (page: Int) -> Unit,
     ) {
-        val page = loadEngine<T>(pageInfo)
-        tvTips?.visibility = GONE
+        tvTips.visibility = GONE
         if (page == null) {
             if (refreshLayout.isLoading()) {
                 refreshLayout.finishLoadMore(2, false, true)
@@ -182,7 +187,7 @@ abstract class SmartRefreshRecyclerHelper(
                 refreshLayout.setEnableLoadMore(false)
                 if (showHeadTips) {
                     setHeadText("下拉刷新")
-                    tvTips?.visibility = VISIBLE
+                    tvTips.visibility = VISIBLE
                 }
             }
             return
@@ -205,23 +210,27 @@ abstract class SmartRefreshRecyclerHelper(
             }
 
             if (getCurrent() < getLast()) {
-                refreshLayout.finishLoadMore(2, true, false)
                 // 加载下一页
                 refreshLayout.setEnableLoadMore(true)
+                refreshLayout.setNoMoreData(false)
+                if (refreshLayout.isLoading()) {
+                    refreshLayout.finishLoadMore(2, true, false)
+                }
                 refreshLayout.setOnLoadMoreListener {
                     nextPage.invoke(getCurrent() + 1)
                 }
             } else {
                 // 没有下一页的处理
                 refreshLayout.setEnableLoadMore(false)
-                if (getCurrent() > 1) {
+                refreshLayout.setNoMoreData(true)
+                if (getCurrent() > 1 && refreshLayout.isLoading()) {
                     refreshLayout.finishLoadMore(2, true, true)
                 }
             }
         }
     }
 
-    fun start(): Builder {
+    fun builder(): Builder {
         return Builder()
     }
 
@@ -229,8 +238,6 @@ abstract class SmartRefreshRecyclerHelper(
         val scale = context.resources.displayMetrics.density
         return (dipValue * scale + 0.5f).toInt()
     }
-
-    abstract fun <T> loadEngine(any: Any?): PageEngine<T>?
 
     inner class Builder {
         fun setRefresh(refresh: Boolean): Builder {
@@ -249,18 +256,22 @@ abstract class SmartRefreshRecyclerHelper(
         }
 
         fun setNoData(noData: Pair<Int, CharSequence>): Builder {
+            noDataImage = noData.first
+            noDataText = noData.second
             tvNoData?.text = noData.second
             ivNoData?.setImageResource(noData.first)
             return this
         }
 
-        fun setNoDataText(noDataText: CharSequence): Builder {
-            tvNoData?.text = noDataText
+        fun setNoDataText(text: CharSequence): Builder {
+            noDataText = text
+            tvNoData?.text = text
             return this
         }
 
-        fun setNoDataImage(@DrawableRes noDataImage: Int): Builder {
-            ivNoData?.setImageResource(noDataImage)
+        fun setNoDataImage(@DrawableRes image: Int): Builder {
+            noDataImage = image
+            ivNoData?.setImageResource(image)
             return this
         }
 
@@ -281,17 +292,17 @@ abstract class SmartRefreshRecyclerHelper(
         }
 
         fun setAdapter(adapter: BaseAdapter<*, *>): Builder {
-            recyclerView?.adapter = adapter
+            recyclerView.adapter = adapter
             return this
         }
 
         fun setHeadText(text: CharSequence): Builder {
-            tvTips?.text = text
+            tvTips.text = text
             return this
         }
 
         fun setLayoutManager(layoutManager: RecyclerView.LayoutManager): Builder {
-            recyclerView?.layoutManager = layoutManager
+            recyclerView.layoutManager = layoutManager
             return this
         }
 
@@ -317,7 +328,7 @@ abstract class SmartRefreshRecyclerHelper(
             }
             val button = addScrollTopButton().also { it?.isVisible = false }
             if (button != null) {
-                recyclerView!!.setOnScrollListener(object : RecyclerView.OnScrollListener() {
+                recyclerView.setOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
                         val layoutManager = recyclerView.layoutManager
@@ -347,6 +358,7 @@ abstract class SmartRefreshRecyclerHelper(
         fun setEnableAutoLoadMore(autoLoadMore: Boolean)
         fun setEnableOverScrollDrag(enable: Boolean)
         fun setEnableOverScrollBounce(enable: Boolean)
+        fun setNoMoreData(show: Boolean)
     }
 
     interface PageEngine<T> {

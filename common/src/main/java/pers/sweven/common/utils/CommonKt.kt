@@ -42,6 +42,7 @@ fun Int.toColorStateList(context: Context): ColorStateList? {
 fun TabLayout?.initTab(
     titles: List<String>,
     onTabSelected: ((tab: TabLayout.Tab?, title: String, selected: Boolean) -> Unit)? = null,
+    selectedIndex: Int = 0,
     icons: List<Drawable?>? = null,
     initTab: ((TabLayout) -> Boolean)? = null,
 ) {
@@ -52,6 +53,9 @@ fun TabLayout?.initTab(
                 newTab.text = it
                 newTab.icon = icons?.get(index)
                 addTab(newTab)
+                if (selectedIndex != 0 && selectedIndex == index) {
+                    selectTab(newTab)
+                }
             }
         }
         addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -146,6 +150,15 @@ fun <T> Boolean?.ifElse(`true`: T, `false`: T = `true`): T {
 }
 
 /**
+ * 布尔
+ * @param [exp] exp （英文）
+ * @return [Boolean]
+ */
+fun <T> T?.bool(exp: (T?) -> Boolean): Boolean {
+    return this?.let { exp(it) } ?: false
+}
+
+/**
  * 当参数为null输出[def],否则输出参数本身
  * 平替  String?:""=>改成通用参数
  * @param [def] 空返回值
@@ -170,10 +183,10 @@ fun <T> T?.isNullEmpty(`null`: T? = null): Boolean {
 /**
  * null时直接返回 [nullDef] ,否则进行 [nulls] 判断，没有[nulls]时进行基础空值判断
  * @param [nullDef] 为空时默认返回值
- * @param [nulls] 以下值皆定义为空值,有值时仅判断当前值
+ * @param [nulls] 以下值皆定义为空值,有值时仅判断当前值,默认空不进行判断
  * @return [T] 返回 [nullDef]
  */
-fun <T> T?.ifNullEmpty(nullDef: T, vararg nulls: T): T {
+fun <T> T?.ifNullEmpty(nullDef: T, vararg nulls: T?): T {
     if (this == null) {
         return nullDef
     }
@@ -284,5 +297,19 @@ fun TextView?.setRichText(text: String) {
 
 fun String?.toRichText(): CharSequence {
     return Utils.toRichText(this) ?: ""
+}
+
+/**
+ * 取区间值
+ * @param [start] 开始
+ * @param [count] 计数
+ * @return [List<T>]
+ */
+fun <T> List<T>.subArray(start: Int, count: Int = size - start): List<T> {
+    if (start < 0 || start >= size) {
+        return emptyList()
+    }
+    val end = minOf(start + count, size)
+    return this.subList(start, end)
 }
 

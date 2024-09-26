@@ -24,7 +24,14 @@ public class NumberUtils {
 
     public static int parseInt(String str) {
         if (isNumeric(str)) {
-            return Integer.parseInt(str);
+            return (int) parseDouble(str);
+        }
+        return 0;
+    }
+
+    public static long parseLong(String str) {
+        if (isNumeric(str)) {
+            return (long) parseDouble(str);
         }
         return 0;
     }

@@ -27,6 +27,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     private final Map<Integer, OnAdapterClick<T>> onClickMap = new HashMap<>();
     private OnAdapterViewClick<T> onItemViewClick;
     private OnAdapterClick<T> onItemClick;
+    private OnLoadCompleteListener mLoadCompleteListener;
 
     public BaseAdapter(int layoutId) {
         this.layoutId = layoutId;
@@ -163,6 +164,9 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
         onData(holder.binding, data);
         onData(holder.binding, data, position);
         onData(holder, data);
+        if (getItemCount() - 1 == position && mLoadCompleteListener!= null) {
+            mLoadCompleteListener.onLoadComplete();
+        }
     }
 
     protected void onData(BaseViewHolder<R> holder, T data) {
@@ -174,12 +178,21 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     protected void onData(R binding, T data, int position) {
     }
 
-    public void setOnViewClickListener(OnAdapterViewClick<T> onViewClick, int resId) {
-        this.onViewClickMap.put(resId, onViewClick);
+    public void setOnViewClickListener(OnAdapterViewClick<T> onViewClick, int... resId) {
+        for (int id : resId) {
+            this.onViewClickMap.put(id, onViewClick);
+        }
     }
 
     public void setOnItemClickListener(OnAdapterViewClick<T> onItemClick) {
         this.onItemViewClick = onItemClick;
+    }
+
+    /**
+     * @param loadCompleteListener 加载完成侦听器
+     */
+    public void setOnLoadCompleteListener(OnLoadCompleteListener loadCompleteListener) {
+        mLoadCompleteListener = loadCompleteListener;
     }
 
     @Deprecated
@@ -204,6 +217,10 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
         void onClick(AdapterIt<T> it);
     }
 
+    public interface OnLoadCompleteListener {
+        void onLoadComplete();
+    }
+
     public static class AdapterIt<T> {
         public View view;
         public int position;
@@ -218,7 +235,6 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
             this.data = data;
         }
     }
-
 
     public static class BaseViewHolder<R extends ViewDataBinding> extends RecyclerView.ViewHolder {
         private final R binding;

@@ -22,7 +22,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
     (val layout: Int) : RxFragment() {
 
     var merge = false
-    var binding: T? = null
+    lateinit var binding: T
         private set
     var model: VM? = null
         private set
@@ -43,7 +43,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
             DataBindingUtil.inflate(inflater, layout, container, false)
         }
         onCreateSelf(savedInstanceState)
-        return binding?.root
+        return binding.root
     }
 
     protected open fun onCreateSelf(savedInstanceState: Bundle?) {
@@ -60,7 +60,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
         getBundle(bundle)
         model = initViewModel()
         initView()
-        initObservable(model!!)
+        model?.let { initObservable(it) }
         Thread(this::doBusiness).start()
     }
 

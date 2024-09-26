@@ -198,6 +198,12 @@ public class GlideUtils {
 
     @NonNull
     @CheckResult
+    public GlideUtils load(@Nullable Object model) {
+        return loadModel(model);
+    }
+
+    @NonNull
+    @CheckResult
     public GlideUtils load(@Nullable Drawable drawable) {
         return loadModel(drawable);
     }
