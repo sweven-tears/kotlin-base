@@ -10,7 +10,7 @@ ext {
             targetCompatibility: JavaVersion.VERSION_1_8
     ]
 
-    kotlin = '1.5.30-M1'
+    kotlin = '1.6.10'
 
     signConf = [
             "storeFile"    : 'test.jks',
