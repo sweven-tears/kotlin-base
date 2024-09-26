@@ -65,8 +65,8 @@ ext {
             "leak-release"                 : 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4',
 
             // immerse
-            "immerse"                      : 'com.gyf.immersionbar:immersionbar:3.0.0',
-            "immerse-components"           : 'com.gyf.immersionbar:immersionbar-components:3.0.0',// fragment快速实现（可选）
+            "immerse"                      : 'com.gyf.immersionbar:immersionbar:3.2.2',
+            "immerse-components"           : 'com.gyf.immersionbar:immersionbar-components:3.2.2',// fragment快速实现（可选）
 
             "arouter-api"                  : "com.alibaba:arouter-api:1.5.2",
             "arouter-compiler"             : "com.alibaba:arouter-compiler:1.5.2",
