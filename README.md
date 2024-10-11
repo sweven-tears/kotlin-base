@@ -32,7 +32,7 @@ dependencyResolutionManagement {
 
 ```groovy
 dependencies {
-    implementation 'com.github.sweven-base:kotlin-base:1.2.13'
+    implementation 'com.github.sweven-tears:kotlin-base:1.2.13'
 }
 ```
 
@@ -66,7 +66,7 @@ new TextViewHelper(textView)
 兼容列表的下拉刷新和上拉加载，目前能实现简单的下拉刷新和上拉加载功能，其他功能逐步完善中，
 这个需要配合[[BaseAdapter](https://github.com/sweven-tears/kotlin-base/blob/main/common/src/main/java/pers/sweven/common/base/BaseAdapter.java)]
 
-示例代码前往：[[RefreshHelper](https://github.com/sweven-tears/kotlin-base/blob/main/app/src/main/java/com/app/test/helper/RefreshHelper.kt)]
+示例代码前往：[[RefreshHelper](https://github.com/sweven-tears/kotlin-base/blob/main/app/src/main/java/com/app/test/utils/RefreshHelper.kt)]
 
 日常使用方法：
 
