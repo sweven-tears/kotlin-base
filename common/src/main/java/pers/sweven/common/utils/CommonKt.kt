@@ -140,6 +140,17 @@ fun <T : View> Array<T>?.onClickView(listener: (View) -> Unit) {
 }
 
 /**
+ * 如果函数
+ * @param [bool] 布尔
+ * @param [true] 真
+ * @param [false] 假
+ * @return [T]
+ */
+fun <T> ifFunc(bool:Boolean,`true`: T, `false`: T):T{
+    return if (bool) `true` else `false`
+}
+
+/**
  * java的[Bolean]?block:block
  * @param [true] 为真时参数
  * @param [false] 为假时参数

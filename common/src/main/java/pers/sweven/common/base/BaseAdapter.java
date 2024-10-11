@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pers.sweven.common.utils.Utils;
+
 /**
  * Created by Sweven on 2023/8/9--17:25.
  * Email: sweventears@163.com
@@ -126,14 +128,14 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
             if (view == null) {
                 continue;
             }
-            view.setOnClickListener(v -> {
+            Utils.onClickView(v -> {
                 int position = holder.getAdapterPosition();
                 T data = list.get(position);
                 OnAdapterViewClick<T> click = onViewClickMap.get(id);
                 if (click != null) {
                     click.onClick(new AdapterIt<>(v, position, data));
                 }
-            });
+            }, view);
         }
         for (Integer id : onClickMap.keySet()) {
             View view = holder.itemView.findViewById(id);
@@ -164,7 +166,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
         onData(holder.binding, data);
         onData(holder.binding, data, position);
         onData(holder, data);
-        if (getItemCount() - 1 == position && mLoadCompleteListener!= null) {
+        if (getItemCount() - 1 == position && mLoadCompleteListener != null) {
             mLoadCompleteListener.onLoadComplete();
         }
     }
