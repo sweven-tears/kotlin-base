@@ -93,6 +93,7 @@ dependencies {
 
     kapt rootProject.ext.dependencies["arouter-compiler"]
 
+    implementation rootProject.ext.dependencies["smart-refresh-kernel"]
 
     implementation project(':common')
 }

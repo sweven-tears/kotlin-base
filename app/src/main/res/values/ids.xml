@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="translucent_view" type="id" />
+
+    <item name="tvTips" type="id" />
+    <item name="ivNoData" type="id" />
+    <item name="tvNoData" type="id" />
+    <item name="smartRelativeLayout" type="id" />
+    <item name="smartRecyclerView" type="id" />
+    <item name="smartTop" type="id" />
 </resources>

@@ -32,7 +32,7 @@ dependencyResolutionManagement {
 
 ```groovy
 dependencies {
-    implementation 'com.github.sweven-base:kotlin-base:1.0.7'
+    implementation 'com.github.sweven-base:kotlin-base:1.2.13'
 }
 ```
 
@@ -60,6 +60,31 @@ new TextViewHelper(textView)
 ```
 
 更多用法请查看[[TextViewStyle](https://github.com/sweven-tears/kotlin-base/blob/main/common/src/main/java/pers/sweven/common/helper/textview/TextViewStyle.java)]
+
+### SmartRefreshRecyclerHelper
+
+兼容列表的下拉刷新和上拉加载，目前能实现简单的下拉刷新和上拉加载功能，其他功能逐步完善中，
+这个需要配合[[BaseAdapter](https://github.com/sweven-tears/kotlin-base/blob/main/common/src/main/java/pers/sweven/common/base/BaseAdapter.java)]
+
+示例代码前往：[[RefreshHelper](https://github.com/sweven-tears/kotlin-base/blob/main/app/src/main/java/com/app/test/helper/RefreshHelper.kt)]
+
+日常使用方法：
+
+```kotlin
+helper = RefreshHelper(refreshLayout).apply {
+    builder().setAdapter(adapter)
+        .setRefresh(true)// 设置是否可以下拉刷新
+        .setAutoLoadMore(true)// 设置是否自动加载
+        .setNoData(BaseViewModel.PLACEHOLDER[7])// 设置无数据时显示的缺省图
+        .setFast2Top(true, 20)// 设置滚动20条后出现置顶按钮
+        .setOnRefreshListener {// 设置下拉刷新事件
+            model.searchList()
+        }
+}
+helper?.nextPage(page, adapter) { page ->
+    model.searchList(page)
+}
+```
 
 可以快速继承BaseActivity，BaseFragment，BaseDialog...
 
