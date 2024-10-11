@@ -67,8 +67,7 @@ ext {
             // immerse
             "immerse"                      : 'com.geyifeng.immersionbar:immersionbar:3.2.2',
             "immerse-components"           : 'com.geyifeng.immersionbar:immersionbar-components:3.2.2',// fragment快速实现（可选）
-            // kotlin扩展（可选）
-            "immerse-ktx"                  :'com.geyifeng.immersionbar:immersionbar-ktx:3.2.2',
+            "immerse-ktx"                  :'com.geyifeng.immersionbar:immersionbar-ktx:3.2.2', // kotlin扩展（可选）
 
             "arouter-api"                  : "com.alibaba:arouter-api:1.5.2",
             "arouter-compiler"             : "com.alibaba:arouter-compiler:1.5.2",
