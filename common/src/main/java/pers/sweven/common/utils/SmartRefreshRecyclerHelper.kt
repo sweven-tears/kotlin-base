@@ -3,6 +3,7 @@ package pers.sweven.common.utils
 import android.content.Context
 import android.graphics.Color
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -74,6 +75,13 @@ abstract class SmartRefreshRecyclerHelper(
 
 
     private fun addNoData(parent: RelativeLayout) {
+        val noData = setNoData(parent)
+        includeNoData = noData.first
+        ivNoData = noData.second.first
+        tvNoData = noData.second.second
+    }
+
+    open fun setNoData(parent: RelativeLayout): Pair<ViewGroup, Pair<ImageView, TextView>> {
         val relativeLayout = RelativeLayout(parent.context)
         val imageView = ImageView(parent.context)
         imageView.id = ivNoDataId
@@ -86,7 +94,7 @@ abstract class SmartRefreshRecyclerHelper(
         val textView = TextView(parent.context)
         textView.id = tvNoDataId
         RelativeLayout.LayoutParams(-2, -2).apply {
-            addRule(RelativeLayout.ALIGN_BOTTOM, ivNoDataId)
+            addRule(RelativeLayout.BELOW, ivNoDataId)
             addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE)
             relativeLayout.addView(textView, this)
         }
@@ -94,10 +102,7 @@ abstract class SmartRefreshRecyclerHelper(
             parent.addView(relativeLayout, this)
         }
         relativeLayout.visibility = GONE
-
-        includeNoData = relativeLayout
-        ivNoData = imageView
-        tvNoData = textView
+        return Pair(relativeLayout, (imageView to textView))
     }
 
     fun setHeadText(text: CharSequence) {
@@ -121,8 +126,8 @@ abstract class SmartRefreshRecyclerHelper(
     }
 
     fun showNoData(show: Boolean) {
-        if (refreshEnable && tvTips?.text?.trim()?.isNotEmpty() == true) {
-            tvTips?.visibility = if (show) VISIBLE else GONE
+        if (refreshEnable && tvTips.text?.trim()?.isNotEmpty() == true) {
+            tvTips.visibility = if (show) VISIBLE else GONE
         }
         recyclerView.visibility = if (show) GONE else VISIBLE
 
@@ -135,8 +140,8 @@ abstract class SmartRefreshRecyclerHelper(
     }
 
     fun showNoData(noData: Pair<Int, CharSequence>) {
-        if (refreshEnable && tvTips?.text?.trim()?.isNotEmpty() == true) {
-            tvTips?.visibility = GONE
+        if (refreshEnable && tvTips.text?.trim()?.isNotEmpty() == true) {
+            tvTips.visibility = GONE
         }
 
         recyclerView.visibility = GONE

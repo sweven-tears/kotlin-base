@@ -2,8 +2,11 @@ package com.app.test.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.core.view.setPadding
 import com.app.test.R
 import com.app.test.entity.data.Page
@@ -53,6 +56,30 @@ class RefreshHelper(refreshLayout: SmartRefreshLayout) :
                 }
             }
         }, adapter, showHeadTips, nextPage)
+    }
+
+    override fun setNoData(parent: RelativeLayout): Pair<ViewGroup, Pair<ImageView, TextView>> {
+        val relativeLayout = RelativeLayout(parent.context)
+        val imageView = ImageView(parent.context)
+        imageView.id = ivNoDataId
+        imageView.adjustViewBounds = true
+        imageView.contentDescription = "暂无更多数据"
+        RelativeLayout.LayoutParams(dip2px(200f), -2).apply {
+            addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+            relativeLayout.addView(imageView, this)
+        }
+        val textView = TextView(parent.context)
+        textView.id = tvNoDataId
+        RelativeLayout.LayoutParams(-2, -2).apply {
+            addRule(RelativeLayout.BELOW, ivNoDataId)
+            addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE)
+            relativeLayout.addView(textView, this)
+        }
+        RelativeLayout.LayoutParams(-1, -1).apply {
+            parent.addView(relativeLayout, this)
+        }
+        relativeLayout.visibility = View.GONE
+        return Pair(relativeLayout, (imageView to textView))
     }
 
     private class TopView(private val context: Context) {
