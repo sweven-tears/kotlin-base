@@ -29,7 +29,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
-import pers.sweven.common.app.BaseApplication;
+import pers.sweven.common.GlobalApp;
 import pers.sweven.common.repository.converter.GsonConverterBodyFactory;
 import pers.sweven.common.repository.cookie.CookieJarImpl;
 import pers.sweven.common.repository.cookie.store.PersistentCookieStore;
@@ -80,7 +80,7 @@ public class _BaseRetrofit {
                     //可以设置请求过滤的水平,body,basic,headers
                     httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
                     //设置 请求的缓存的大小跟位置
-                    File cacheFile = new File(BaseApplication.getContext().getCacheDir(), "cache");
+                    File cacheFile = new File(GlobalApp.getInstance().getApplication().getCacheDir(), "cache");
                     Cache cache = new Cache(cacheFile, 1024 * 1024 * 50); //50Mb 缓存的大小
 
                     client = new OkHttpClient
@@ -90,7 +90,7 @@ public class _BaseRetrofit {
                             .addInterceptor(httpLoggingInterceptor) //日志,所有的请求响应
 //                            .addInterceptor(new HeaderInterceptor(getRequestHeader())) // token过滤
 //                            .addInterceptor(new ParameterInterceptor(getRequestParams()))  //公共参数添加
-                            .addInterceptor(new CacheInterceptor(BaseApplication.getContext()))
+                            .addInterceptor(new CacheInterceptor(GlobalApp.getInstance().getApplication()))
                             .addInterceptor(new HeaderInterceptor(getRequestHeader()))
                             //不加以下两行代码,https请求不到自签名的服务器
                             .sslSocketFactory(createSSLSocketFactory(), new TrustAllCerts())//创建一个证书对象
@@ -100,7 +100,7 @@ public class _BaseRetrofit {
                             .readTimeout(15, TimeUnit.SECONDS)//读取超时时间
                             .writeTimeout(15, TimeUnit.SECONDS)//写入超时时间
                             .retryOnConnectionFailure(true)//连接不上是否重连,false不重连
-                            .cookieJar(new CookieJarImpl(new PersistentCookieStore(BaseApplication.getContext())))
+                            .cookieJar(new CookieJarImpl(new PersistentCookieStore(GlobalApp.getInstance().getApplication())))
                             .addInterceptor(new ExceptionInterceptor())
                             .build();
 

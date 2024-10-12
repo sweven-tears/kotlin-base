@@ -10,20 +10,25 @@ import androidx.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import pers.sweven.common.GlobalApp;
+
 public class PageInit implements Application.ActivityLifecycleCallbacks {
     private static PageInit instance;
     public boolean backToFront = false;
     public List<Activity> activities = new ArrayList<>();
-    private Context context;
+    private WeakReference<Context> context;
+    private Application application;
     private int saveCount = 0;
 
     private PageInit(Application application) {
         if (application != null) {
+            this.application = application;
             application.registerActivityLifecycleCallbacks(this);
         }
     }
@@ -38,7 +43,7 @@ public class PageInit implements Application.ActivityLifecycleCallbacks {
         if (instance == null) {
             synchronized (PageInit.class) {
                 if (instance == null) {
-                    init(BaseApplication.application);
+                    init(GlobalApp.getInstance().getApplication());
                 }
             }
         }
@@ -47,7 +52,7 @@ public class PageInit implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityCreated(@NonNull @NotNull Activity activity, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        context = activity;
+        context = new WeakReference<>(activity);
         activities.add(activity);
     }
 
@@ -144,7 +149,7 @@ public class PageInit implements Application.ActivityLifecycleCallbacks {
     }
 
     public void clearAll() {
-        if (activities!= null) {
+        if (activities != null) {
             for (Activity activity : activities) {
                 if (!activity.isDestroyed()) {
                     activity.finish();
@@ -158,6 +163,10 @@ public class PageInit implements Application.ActivityLifecycleCallbacks {
     }
 
     public Context getContext() {
-        return context;
+        if (context == null || context.get()==null) {
+            return application;
+        }else {
+            return context.get();
+        }
     }
 }
