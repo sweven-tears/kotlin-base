@@ -1,7 +1,6 @@
 package pers.sweven.common.base
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle2.components.support.RxFragment
-import pers.sweven.common.app.BaseApplication
 import pers.sweven.common.utils.ToastUtils
 import java.lang.reflect.ParameterizedType
 
@@ -59,6 +57,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
         }
         getBundle(bundle)
         model = initViewModel()
+        model?.attachLifecycle(this)
         initView()
         model?.let { initObservable(it) }
         Thread(this::doBusiness).start()
@@ -68,14 +67,14 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
     }
 
     open fun initObservable(model: VM) {
-        model.showLoading.observe(this, { show: Boolean? ->
+        model.showLoading.observe(viewLifecycleOwner, { show: Boolean? ->
             if (show != null && show) {
                 showLoading()
             } else {
                 dismissLoading()
             }
         })
-        model.throwable.observe(this, { throwable: Throwable? ->
+        model.throwable.observe(viewLifecycleOwner, { throwable: Throwable? ->
             if (throwable == null) {
                 return@observe
             }
@@ -105,7 +104,6 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        vm?.attachLifecycle(this)
         return vm
     }
 

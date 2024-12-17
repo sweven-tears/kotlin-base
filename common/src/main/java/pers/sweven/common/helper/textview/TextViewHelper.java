@@ -15,6 +15,9 @@ import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.Contract;
 
 import java.util.LinkedList;
 
@@ -155,11 +158,15 @@ public class TextViewHelper {
         }
 
         if (style.getTypefaceSpan() != null) {
-            spannableString.setSpan(style, start, end, flag);
+            spannableString.setSpan(style.getTypefaceSpan(), start, end, flag);
         }
 
         if (style.getSpan() != null) {
             spannableString.setSpan(style.getSpan(), start, end, flag);
+        }
+
+        if (style.getStyleSpan()!=null){
+            spannableString.setSpan(style.getStyleSpan(), start, end, flag);
         }
 
         if (style.getStyles() != null) {
@@ -180,5 +187,17 @@ public class TextViewHelper {
             this.end = end;
             this.style = style;
         }
+    }
+
+    @NonNull
+    @Contract(" -> new")
+    public static TextViewHelperBuilder builder() {
+        return builder(null);
+    }
+
+    @NonNull
+    @Contract("_ -> new")
+    public static TextViewHelperBuilder builder(@Nullable TextView textView){
+        return new TextViewHelperBuilder(textView);
     }
 }

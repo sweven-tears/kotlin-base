@@ -41,7 +41,7 @@ fun Int.toColorStateList(context: Context): ColorStateList? {
  */
 fun TabLayout?.initTab(
     titles: List<String>,
-    onTabSelected: ((tab: TabLayout.Tab?, title: String, selected: Boolean) -> Unit)? = null,
+    onTabSelected: ((tab: TabLayout.Tab, title: String, selected: Boolean) -> Unit)? = null,
     selectedIndex: Int = 0,
     icons: List<Drawable?>? = null,
     initTab: ((TabLayout) -> Boolean)? = null,
@@ -197,7 +197,7 @@ fun <T> T?.isNullEmpty(`null`: T? = null): Boolean {
  * @param [nulls] 以下值皆定义为空值,有值时仅判断当前值,默认空不进行判断
  * @return [T] 返回 [nullDef]
  */
-fun <T> T?.ifNullEmpty(nullDef: T, vararg nulls: T?): T {
+fun <T> T?.ifNullEmpty(nullDef: T, vararg nulls: T): T {
     if (this == null) {
         return nullDef
     }

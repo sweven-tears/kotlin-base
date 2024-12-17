@@ -43,8 +43,9 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
         getBundle(extras)
         registerLayout()
         model = initViewModel()
+        model?.attachLifecycle(this)
         initView()
-        initObservable(model!!)
+        model?.let { initObservable(it) }
         Thread(this::doBusiness).start()
     }
 
@@ -73,7 +74,6 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        vm?.attachLifecycle(this)
         return vm
     }
 

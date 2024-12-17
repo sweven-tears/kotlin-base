@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -450,8 +451,8 @@ public class Utils {
     }
 
     private static String getRandomChinese() {
-        boolean simple = true;
-        if (!simple) {
+        boolean useSimpleMethod = true;
+        if (!useSimpleMethod) {
             char c = (char) (0x4e00 + (int) (Math.random() * (0x9fa5 - 0x4e00 + 1)));
             return String.valueOf(c);
         }

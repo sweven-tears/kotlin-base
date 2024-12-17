@@ -2,10 +2,12 @@ package pers.sweven.common.helper.textview;
 
 import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
+import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
 
 import androidx.annotation.ColorInt;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +27,7 @@ public class TextViewStyle {
     private TypefaceSpan typefaceSpan;
     private Object span;
     private List<CharacterStyle> styles;
+    private StyleSpan styleSpan;
 
     public TextViewStyle() {
     }
@@ -138,5 +141,21 @@ public class TextViewStyle {
     public TextViewStyle setStyles(CharacterStyle... styles) {
         this.styles = Arrays.asList(styles);
         return this;
+    }
+
+    public TextViewStyle addStyle(CharacterStyle style) {
+        if (this.styles == null) {
+            this.styles = new ArrayList<>();
+        }
+        this.styles.add(style);
+        return this;
+    }
+
+    public StyleSpan getStyleSpan() {
+        return styleSpan;
+    }
+
+    public void setStyleSpan(StyleSpan styleSpan) {
+        this.styleSpan = styleSpan;
     }
 }
