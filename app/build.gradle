@@ -78,6 +78,9 @@ dependencies {
 
     implementation fileTree(includes: ['*.jar'], dir: 'libs')
 
+    implementation rootProject.ext.dependencies["kotlin"]
+    implementation rootProject.ext.dependencies["core-ktx"]
+
     implementation rootProject.ext.dependencies["appcompat"]
     implementation rootProject.ext.dependencies["meterial"]
     implementation rootProject.ext.dependencies["constraintlayout"]
@@ -90,6 +93,10 @@ dependencies {
     implementation rootProject.ext.dependencies['photo-choose']
 //    implementation rootProject.ext.dependencies['exoplayer']
 //    implementation rootProject.ext.dependencies['exoplayer-ui']
+
+    implementation rootProject.ext.dependencies["smart-refresh-kernel"]
+    implementation rootProject.ext.dependencies["smart-refresh-classics"]
+    implementation rootProject.ext.dependencies["smart-refresh-classics-footer"]
 
     kapt rootProject.ext.dependencies["arouter-compiler"]
 

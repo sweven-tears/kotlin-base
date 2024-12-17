@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="HeadPictureView">
+        <attr name="android:textColor" format="reference|color" />
+        <attr name="android:text" format="string" />
+        <attr name="circleColor" format="color" />
+    </declare-styleable>
 
 </resources>
