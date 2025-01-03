@@ -13,7 +13,7 @@ import pers.sweven.common.utils.cache.CacheManager;
  * Email: sweventears@163.com
  */
 public class GlobalApp {
-    private static GlobalApp instance;
+    private static volatile GlobalApp instance;
     private final Application.ActivityLifecycleCallbacks mCallbacks = new Application.ActivityLifecycleCallbacks() {
 
         @Override

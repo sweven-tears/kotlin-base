@@ -128,6 +128,8 @@ public class Utils {
                             textViewStyle.setTextColor(Color.parseColor(value));
                         } else if ("size".equals(key)) {// 字体大小赋值
                             textViewStyle.setTextSize(new TextSize(NumberUtils.parseFloat(value)));
+                        } else if ("sp".equals(key)) {// 字体大小赋值
+                            textViewStyle.setTextSize(new TextSize(NumberUtils.parseInt(value), true));
                         } else if ("font".equals(key)) {// 字体赋值
                             Log.e("Utils", "字体样式请自定义");
                         } else if ("bold".equals(key)) {// 字体粗细赋值

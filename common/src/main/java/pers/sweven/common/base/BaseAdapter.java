@@ -89,7 +89,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
 
     public void removeDataAt(int position) {
         list.remove(position);
-        notifyItemChanged(position);
+        notifyItemRemoved(position);
     }
 
     public List<T> getList() {
@@ -239,7 +239,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     }
 
     public static class BaseViewHolder<R extends ViewDataBinding> extends RecyclerView.ViewHolder {
-        private final R binding;
+        public final R binding;
 
         public BaseViewHolder(R binding) {
             super(binding.getRoot());
