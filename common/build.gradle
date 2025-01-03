@@ -8,6 +8,8 @@ apply plugin: 'kotlin-kapt'
 group='com.github.sweven-tears'
 
 android {
+    namespace "pers.sweven.common"
+
     buildFeatures {
         dataBinding = true
     }
@@ -68,7 +70,7 @@ dependencies {
     api config.dependencies['okhttp']
 
     implementation config.dependencies['glide']
-    kapt config.dependencies['glide-compiler']
+    kotlin-kapt config.dependencies['glide-compiler']
 
     api config.dependencies['retrofit']
     api config.dependencies['logging-intercepter']

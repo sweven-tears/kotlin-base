@@ -52,11 +52,13 @@ dependencies {
 这是一款我认为比较好用的具有富文本编辑功能的TextView使用插件， 实用方法
 
 ```java
-new TextViewHelper(textView)
-        .addText("Hello",Color.RED)
-        .addText(" ")
-        .addText("World!",new TextViewStyle(Color.BLACK,0.75f))
-        .build();
+private void test(){
+    new TextViewHelper(textView)
+            .addText("Hello",Color.RED)
+            .addText(" ")
+            .addText("World!",new TextViewStyle(Color.BLACK,0.75f))
+            .build();
+}
 ```
 
 更多用法请查看[[TextViewStyle](https://github.com/sweven-tears/kotlin-base/blob/main/common/src/main/java/pers/sweven/common/helper/textview/TextViewStyle.java)]

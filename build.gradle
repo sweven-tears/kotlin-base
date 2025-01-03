@@ -2,7 +2,7 @@
 apply from: "config.gradle"
 buildscript {
     ext.config = rootProject.ext
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.7.20'
     repositories {
         google()
         mavenCentral()
@@ -12,8 +12,8 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.3"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
+        classpath "com.android.tools.build:gradle:8.7.3"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
 
 //        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
