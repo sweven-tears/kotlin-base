@@ -98,7 +98,7 @@ public class PageManager {
         if (keepOnly) {
             PageInit.getInstance().finishOtherActivity(clazz);
         }
-        if (PageInit.getInstance().isHas(clazz) && forbiddenRepeat) {
+        if (PageInit.getInstance().isCurrentActivity(clazz) && forbiddenRepeat) {
             return;
         }
         if (context == null) {
@@ -127,7 +127,7 @@ public class PageManager {
         if (keepOnly) {
             PageInit.getInstance().finishOtherActivity(clazz);
         }
-        if (PageInit.getInstance().isHas(clazz) && forbiddenRepeat) {
+        if (PageInit.getInstance().isCurrentActivity(clazz) && forbiddenRepeat) {
             return;
         }
         try {
@@ -150,7 +150,7 @@ public class PageManager {
         if (keepOnly) {
             PageInit.getInstance().finishOtherActivity(clazz);
         }
-        if (PageInit.getInstance().isHas(clazz) && forbiddenRepeat) {
+        if (PageInit.getInstance().isCurrentActivity(clazz) && forbiddenRepeat) {
             return;
         }
         try {
@@ -178,7 +178,7 @@ public class PageManager {
         if (keepOnly) {
             PageInit.getInstance().finishOtherActivity(clazz);
         }
-        if (PageInit.getInstance().isHas(clazz) && forbiddenRepeat) {
+        if (PageInit.getInstance().isCurrentActivity(clazz) && forbiddenRepeat) {
             return;
         }
         try {
@@ -189,7 +189,7 @@ public class PageManager {
             if (launcher == null) {
                 throw new Exception("launcher不能为空");
             }
-            launcher.launch(input.consume(this), optionsCompat);
+            launcher.launch(input.consume(this, intent), optionsCompat);
         } catch (Exception e) {
             ToastUtils.showShort(page + "页面跳转失败");
             e.printStackTrace();

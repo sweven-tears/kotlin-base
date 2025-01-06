@@ -148,6 +148,18 @@ public class PageInit implements Application.ActivityLifecycleCallbacks {
         return false;
     }
 
+    public Activity getActivity(Class<?> tClass) {
+        if (activities == null) {
+            return null;
+        }
+        for (Activity activity : activities) {
+            if (activity.getClass() == tClass) {
+                return activity;
+            }
+        }
+        return null;
+    }
+
     public void clearAll() {
         if (activities != null) {
             for (Activity activity : activities) {

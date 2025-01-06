@@ -32,7 +32,7 @@ dependencyResolutionManagement {
 
 ```groovy
 dependencies {
-    implementation 'com.github.sweven-tears:kotlin-base:1.2.13'
+    implementation 'com.github.sweven-tears:kotlin-base:1.2.17'
 }
 ```
 
@@ -85,6 +85,9 @@ helper?.nextPage(page, adapter) { page ->
     model.searchList(page)
 }
 ```
+
+### PageManager
+[[README](https://github.com/sweven-tears/kotlin-base/blob/main/common/src/main/java/pers/sweven/common/app/README.md)]
 
 可以快速继承BaseActivity，BaseFragment，BaseDialog...
 
