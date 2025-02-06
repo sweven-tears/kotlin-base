@@ -24,7 +24,7 @@ abstract class JsonTool {
         return gson.fromJson(json, type)
     }
 
-    open fun toJson(obj: Any): String {
+    open fun toJson(obj: Any?): String {
         return gson.toJson(obj)?:""
     }
 }

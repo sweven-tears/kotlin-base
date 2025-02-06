@@ -1,4 +1,4 @@
-package com.app.test.entity.event
+package com.app.test.data.event
 
 /**
  * Created by Sweven on 2023/7/27--10:01.

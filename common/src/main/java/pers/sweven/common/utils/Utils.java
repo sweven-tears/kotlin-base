@@ -242,7 +242,9 @@ public class Utils {
             listener.onClick(v);
         };
         for (View view : views) {
-            view.setOnClickListener(listener == null ? null : onClickListener);
+            if (view != null) {
+                view.setOnClickListener(listener == null ? null : onClickListener);
+            }
         }
     }
 

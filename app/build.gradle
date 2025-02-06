@@ -103,4 +103,6 @@ dependencies {
     implementation rootProject.ext.dependencies["smart-refresh-kernel"]
 
     implementation project(':common')
+
+//    implementation 'com.github.sweven-tears:Album:1.1.0'
 }
