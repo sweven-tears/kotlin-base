@@ -1,9 +1,12 @@
 package pers.sweven.common.repository.entity.request
 
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import pers.sweven.common.repository.entity.request.BaseRequest.Param
 import java.lang.reflect.Field
+
 
 /**
  * 基本请求参数构建
@@ -69,18 +72,18 @@ open class BaseRequest() {
         return true
     }
 
-    open fun toAnyMap(): HashMap<String, Any?>{
+    open fun toAnyMap(): HashMap<String, Any> {
         val fields = javaClass.declaredFields
-        val map = hashMapOf<String, Any?>()
+        val map = hashMapOf<String, Any>()
         fields.forEachIndexed { index, field ->
             addAnyMap(field, map)
         }
         return map
     }
 
-    fun toSuperAnyMap(): HashMap<String, Any?> {
+    fun toSuperAnyMap(): HashMap<String, Any> {
         var clazz: Class<*>? = javaClass
-        val map = hashMapOf<String, Any?>()
+        val map = hashMapOf<String, Any>()
         while (clazz != null) {
             val superFields = clazz.declaredFields
             superFields.forEachIndexed { _, field ->
@@ -91,8 +94,7 @@ open class BaseRequest() {
         return map
     }
 
-
-    open fun addAnyMap(it: Field, map: HashMap<String, Any?>): Boolean {
+    open fun addAnyMap(it: Field, map: HashMap<String, Any>): Boolean {
         val param = it.getAnnotation(Param::class.java)
         if (param != null) {
             if (!param.isAdd) {
@@ -106,7 +108,9 @@ open class BaseRequest() {
             if (param.noAdd.contains(value.toString())) {
                 return false
             }
-            map[name] = value
+            if (value != null) {
+                map[name] = value
+            }
             return true
         }
 
@@ -152,8 +156,8 @@ open class BaseRequest() {
      * @return [String?]
      */
     fun throwSuperNullByDesc(vararg exceptName: String): String? {
-        var clazz:Class<*>? = javaClass
-        while (clazz != null){
+        var clazz: Class<*>? = javaClass
+        while (clazz != null) {
             val fields = clazz.declaredFields
             fields.forEach {
                 it.isAccessible = true
@@ -175,6 +179,15 @@ open class BaseRequest() {
         return null
     }
 
+    /**
+     * 参数
+     * @param [value] 别名
+     * @param [noAdd] 以下参数不需要添加
+     * @param [isAdd] 是否加入参数
+     * @param [desc] 描述
+     * Created by Sweven on 2024/12/20--10:37.
+     * Email: sweventears@163.com
+     */
     @Retention(AnnotationRetention.RUNTIME)
     @Target(
         AnnotationTarget.FIELD,

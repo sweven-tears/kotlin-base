@@ -9,7 +9,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.setPadding
 import com.app.test.R
-import com.app.test.entity.data.Page
+import com.app.test.data.entity.Page
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import pers.sweven.common.base.BaseAdapter
 import pers.sweven.common.utils.SmartRefreshRecyclerHelper

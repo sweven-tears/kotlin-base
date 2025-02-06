@@ -146,7 +146,7 @@ fun <T : View> Array<T>?.onClickView(listener: (View) -> Unit) {
  * @param [false] 假
  * @return [T]
  */
-fun <T> ifFunc(bool:Boolean,`true`: T, `false`: T):T{
+fun <T> ifFunc(bool: Boolean, `true`: T, `false`: T): T {
     return if (bool) `true` else `false`
 }
 
@@ -272,6 +272,21 @@ fun <T> T?.ifNullEmpty(nullDef: T, vararg nulls: T): T {
     } else if (this is Set<*>) {
         if (this.isEmpty()) {
             return nullDef
+        }
+    }
+    return this
+}
+
+/**
+ * 如果为空
+ * @param [if] 如果
+ * @param [empty] 空
+ * @return [T]
+ */
+fun <T> T.ifEmpty(`if`: T, vararg empty: T): T {
+    empty.forEach {
+        if (this == it) {
+            return `if`
         }
     }
     return this

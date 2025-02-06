@@ -89,7 +89,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
 
     public void removeDataAt(int position) {
         list.remove(position);
-        notifyItemChanged(position);
+        notifyItemRemoved(position);
     }
 
     public List<T> getList() {
@@ -112,7 +112,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     @Override
     public BaseViewHolder<R> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         R binding = createView(parent, viewType);
-        BaseViewHolder<R> holder = new BaseViewHolder<>(binding);
+        BaseViewHolder<R> holder = new BaseViewHolder<>(binding,h->initHolderView(h));
         holder.itemView.setOnClickListener(v -> {
             int position = holder.getAdapterPosition();
             T data = list.get(position);
@@ -169,6 +169,10 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
         if (getItemCount() - 1 == position && mLoadCompleteListener != null) {
             mLoadCompleteListener.onLoadComplete();
         }
+    }
+
+    protected void initHolderView(BaseViewHolder<R> holder){
+
     }
 
     protected void onData(BaseViewHolder<R> holder, T data) {
@@ -239,11 +243,23 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     }
 
     public static class BaseViewHolder<R extends ViewDataBinding> extends RecyclerView.ViewHolder {
-        private final R binding;
+        public final R binding;
 
         public BaseViewHolder(R binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
+
+        public BaseViewHolder(R binding,OnInit<BaseViewHolder<R>> onInit) {
+            super(binding.getRoot());
+            this.binding = binding;
+            if (onInit != null) {
+                onInit.init(this);
+            }
+        }
+    }
+
+    interface OnInit<H>{
+        void init(H holder);
     }
 }
