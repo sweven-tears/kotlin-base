@@ -1,0 +1,108 @@
+plugins {
+    id("com.android.library")
+    kotlin("android")
+    kotlin("kapt")
+    // id("com.github.dcendents.android-maven")
+}
+
+group = "com.github.sweven-tears"
+
+android {
+    namespace = "pers.sweven.common"
+
+    buildFeatures {
+        dataBinding = true
+    }
+
+    compileSdk = 35
+    buildToolsVersion = "34.0.0"
+
+    defaultConfig {
+        minSdk = 22
+//        versionCode = 1
+//        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
+
+        // javaCompileOptions {
+        //     annotationProcessorOptions {
+        //         includeCompileClasspath = true
+        //     }
+        // }
+    }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+            proguardFiles(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
+            )
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        getByName("main") {
+            jniLibs.srcDirs("libs")
+        }
+    }
+}
+
+dependencies {
+    implementation(fileTree(mapOf("include" to listOf("*.jar"), "dir" to "libs")))
+
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.fragment)
+
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.constraintlayout)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso)
+
+    api(libs.recyclerview)
+
+    api(libs.gson)
+    api(libs.okhttp)
+
+    implementation(libs.glide)
+    kapt(libs.glide.compiler)
+
+    api(libs.retrofit)
+    api(libs.logging.intercepter)
+    api(libs.rxlifecycle.components)
+    api(libs.retrofit.gson)
+    api(libs.rxandroid)
+    api(libs.adapter.rxjava)
+    api(libs.core.ktx)
+    api(libs.kotlin)
+    api(libs.immerse)
+    api(libs.immerse.components)
+    // api(libs.jpush)
+    // api(libs.jpush.jcore)
+
+    // api(libs.arouter.api)
+    // kapt(libs.arouter.compiler)
+
+    // implementation(libs.umsdk.common)
+    // implementation(libs.umsdk.asms)
+    // implementation(libs.umsdk.crash)
+    // implementation(libs.umsdk.aoid.lenovo)
+    // implementation(libs.umsdk.aoid.oppo)
+    // implementation(libs.umsdk.aoid.mi)
+    // implementation(libs.umsdk.aoid.vivo)
+
+    // debugImplementation(libs.leak.debug)
+    // releaseImplementation(libs.leak.release)
+}
+
+// repositories {
+//     mavenCentral()
+// }

@@ -1,0 +1,433 @@
+[versions]
+#base-config
+compileSdk = "30"
+buildTools = "34.0.0"
+minSdk = "22"
+targetSdk = "30"
+versionCode = "1"
+versionName = "1.0"
+sourceCompatibility = "8"
+targetCompatibility = "8"
+
+storeFile = 'test.jks'
+storePassword = '123456'
+keyPassword = '123456'
+keyAlias = 'test'
+
+# gradle-version-config
+kotlinGradlePlugin = "1.7.20"
+androidGradlePlugin = "8.7.3"
+mavenGradlePlugin = "2.1"
+
+#------------------------ sdk version --------------------
+# Kotlin 标准库 JDK7 版本的依赖版本
+kotlin = "1.9.24"
+agp = "8.9.0-alpha07"
+
+# AndroidX Core KTX 扩展库版本，提供 Kotlin 协程和其他扩展功能
+coreKtx = "1.15.0"
+# JUnit 4 测试框架的版本，支持使用通配符表示最新的 4.x 版本
+junit = "4.14-SNAPSHOT"
+# AndroidX 扩展的 JUnit 测试库版本
+junitVersion = "1.1.5"
+espressoCore = "3.6.1"
+# AndroidX AppCompat 库的版本，用于提供向后兼容的 Android 组件
+appcompat = "1.6.1"
+# Google Material Design 组件库的版本
+material = "1.10.0"
+# AndroidX ConstraintLayout 布局库的版本，用于创建灵活的布局
+constraintlayout = "2.1.4"
+lifecycleLivedataKtx = "2.6.1"
+lifecycleViewmodelKtx = "2.6.1"
+navigationFragmentKtx = "2.6.0"
+navigationUiKtx = "2.6.0"
+androidxActivity = "1.3.1"
+androidxFragment = "1.3.6"
+
+# AndroidX RecyclerView 库的版本，用于创建滚动列表
+recyclerview = "1.3.0"
+# 自定义的 RecyclerView 分页布局管理器库的版本
+recyclerview-pagerlayout = "1.1.8"
+# AndroidX 下拉刷新布局库的版本
+swipe-refresh = "1.1.0"
+# LFRecyclerView 库版本，提供自定义 RecyclerView 功能
+lfrecyclerview = "1.0.5"
+# RecyclerView 侧滑删除库版本
+recyclerview-swipe = "1.3.2"
+# SmartRefreshLayout 内核库版本
+smart-refresh-kernel = "3.0.0-alpha"
+# SmartRefreshLayout 经典头部库版本
+smart-refresh-classics = "3.0.0-alpha"
+# SmartRefreshLayout 雷达头部库版本
+smart-refresh-radar = "3.0.0-alpha"
+# SmartRefreshLayout 伪造头部库版本
+smart-refresh-falsify = "3.0.0-alpha"
+# SmartRefreshLayout Material 头部库版本
+smart-refresh-material = "3.0.0-alpha"
+# SmartRefreshLayout 二级刷新头部库版本
+smart-refresh-two_level = "3.0.0-alpha"
+# SmartRefreshLayout 球型底部库版本
+smart-refresh-ball = "3.0.0-alpha"
+# SmartRefreshLayout 经典底部库版本
+smart-refresh-classics-footer = "3.0.0-alpha"
+
+
+# Google Gson 库的版本，用于 JSON 数据的序列化和反序列化
+gson = "2.10.1"
+# 自定义的 Gson 工厂库版本
+gson-factory = "9.6"
+
+# Glide 图片加载库的版本
+glide = "4.12.0"
+# Glide 注解处理器库的版本，用于生成 Glide 相关代码
+glide-compiler = "4.12.0"
+
+# OkHttp 网络请求库的版本
+okhttp = "3.9.0"
+# OkHttp 的日志拦截器库版本，处于 alpha 阶段
+logging-intercepter = "5.0.0-alpha.2"
+# Retrofit 网络请求框架的版本
+retrofit = "2.9.0"
+# Retrofit 的 Gson 转换器库版本，用于处理 JSON 响应
+retrofit-gson = "2.9.0"
+# Retrofit 的 RxJava2 适配器库版本，用于支持 RxJava 响应式编程
+adapter-rxjava = "2.9.0"
+
+# RxAndroid 库版本，用于在 Android 平台使用 RxJava
+rxandroid = "2.0.2"
+# RxLifecycle 组件库版本，用于管理 RxJava 订阅的生命周期
+rxlifecycle-components = "2.1.0"
+
+# Google Auto 公共工具库版本，用于注解处理
+processor-common = "1.2"
+# Google Auto Service 注解处理器库版本，用于自动生成服务配置文件
+processor-service = "1.0-rc3"
+# JavaPoet 库版本，用于在运行时生成 Java 代码
+processor-javapoet = "1.7.0"
+
+# 友盟 SDK 通用模块版本
+umsdk-common = "9.1.0"
+# 友盟 SDK ASMS 模块版本
+umsdk-asms = "1.1.3"
+# 友盟 SDK 崩溃统计模块版本
+umsdk-crash = "0.0.4"
+# 友盟 SDK 联想 OAID 模块版本
+umsdk-aoid_lenovo = "1.0.0"
+# 友盟 SDK 小米 OAID 模块版本
+umsdk-aoid_mi = "1.0.0"
+# 友盟 SDK OPPO OAID 模块版本
+umsdk-aoid_oppo = "1.0.4"
+# 友盟 SDK VIVO OAID 模块版本
+umsdk-aoid_vivo = "1.0.0.1"
+
+# LeakCanary 调试版本，用于检测内存泄漏
+leak-debug = "1.5.4"
+# LeakCanary 发布版本，无实际检测功能，避免影响性能
+leak-release = "1.5.4"
+
+# 沉浸式状态栏管理库版本
+immerse = "3.0.0"
+# 沉浸式状态栏管理库组件版本
+immerse-components = "3.0.0"
+
+# ARouter API 库版本，用于实现 Android 组件化路由
+arouter-api = "1.5.2"
+# ARouter 注解处理器库版本，用于生成路由表
+arouter-compiler = "1.5.2"
+
+# 倒计时控件库版本
+countdown = "2.1.6"
+# 自定义轮播图控件库版本
+banner = "1.1.3"
+
+# 自定义 Android 加速库版本
+xxqaq-android-faster = "3.29.0"
+# 自定义世界实体库版本
+xxqaq-worldbean = "1.20.0"
+# 自定义 Android 资源库版本
+xxqaq-android-resource = "2.10.1"
+
+# Android GIF 图片处理库版本
+android-gif-drawable = "1.2.12"
+# 自定义 Android 支付库版本
+pay-relinran = "1.0.11"
+# 自定义小红点徽章库版本
+redBagde = "0.2.2"
+# 自定义点赞按钮库版本
+likeButton = "0.1.3"
+# 权限请求库版本
+permission = "2.0.2"
+# 自定义 ViewPager 标题栏库版本
+pager-title = "1.3.1"
+# 自定义应用更新插件库版本
+update-plugin = "2.0.5"
+
+# 极光推送 SDK 版本
+jpush = "3.1.5"
+# 极光推送 JCore 基础库版本
+jpush-jcore = "1.2.3"
+
+# 腾讯云直播 SDK 版本
+live-sdk = "8.5.10028"
+# 弹幕库版本
+live-danmu = "0.9.25"
+
+# ExoPlayer 媒体播放库版本
+exoplayer = "2.11.8"
+# ExoPlayer UI 组件库版本
+exoplayer-ui = "2.16.1"
+# ExoPlayer 核心库版本
+exoplayer-core = "2.16.1"
+# ExoPlayer DASH 流媒体支持库版本
+exoplayer-dash = "2.16.1"
+
+# 节操视频播放器库版本
+jiecao-player = "5.8.1"
+
+# 图片预览库版本
+photoPreview = "2.3.0"
+# 自定义图片选择库版本
+photo-choose = "3.1.5"
+# 图片选择器库版本
+picture-selector = "v3.11.2"
+# PDF 视图分页库版本
+pdf = "1.0.3"
+# 自定义选择器视图库版本
+pickerView = "4.1.9"
+
+# 自定义滚轮视图库版本
+wheelView = "1.3.3"
+
+# 腾讯 Bugly 崩溃报告库版本，使用最新发布版
+bugly = "latest.release"
+# 腾讯 Bugly 应用升级库版本，使用最新发布版
+bugly-upgrade = "latest.release"
+# 腾讯 Bugly 原生崩溃报告库版本，使用最新发布版
+bugly-native = "latest.release"
+
+# 自定义 Kotlin 基础库版本
+sweven-base = "1.2.17"
+
+# MPAndroidChart 图表库版本
+line_chart = "v3.1.0"
+
+# 腾讯定位 SDK 版本
+tencent-location = "7.5.4.3"
+
+
+
+
+[libraries]
+#--------------------------------------------- 一、构建与基础语言支持
+# Kotlin标准库JDK7版本
+kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk7", version.ref = "kotlin" }
+#自定义 Kotlin 基础库，提供一些基础功能支持
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
+android-maven-gradle-plugin = { module = "com.github.dcendents:android-maven-gradle-plugin", version.ref = "mavenGradlePlugin" }
+
+sweven-base = { group = "com.github.sweven-tears", name = "kotlin-base", version.ref = "sweven-base" }
+
+
+#--------------------------------------------- 二、AndroidX扩展与兼容性库
+# AndroidX Core KTX扩展库，提供Kotlin协程和其他扩展功能
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+
+# AndroidX AppCompat库，用于提供向后兼容的Android组件
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+
+# Google Material Design组件库
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# AndroidX ConstraintLayout布局库，用于创建灵活的布局
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+
+# AndroidX Lifecycle相关库，处理组件生命周期
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+# AndroidX Navigation相关库，实现导航功能
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
+
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidxActivity" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "androidxFragment" }
+
+#--------------------------------------------- 三、测试框架
+# JUnit 4测试框架
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+# AndroidX扩展的JUnit测试库
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+
+# AndroidX Espresso测试框架核心库，用于编写UI测试
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+
+
+#--------------------------------------------- 四、数据处理与网络通信
+# Google Gson库，用于JSON数据的序列化和反序列化
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+# 自定义的Gson工厂库
+gson-factory = { group = "com.github.getActivity", name = "GsonFactory", version.ref = "gson-factory" }
+
+# OkHttp网络请求库
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+# Retrofit网络请求框架
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+# Retrofit的Gson转换器库，用于处理JSON响应
+retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit-gson" }
+# Retrofit的RxJava2适配器库，用于支持RxJava响应式编程
+adapter-rxjava = { group = "com.squareup.retrofit2", name = "adapter-rxjava2", version.ref = "adapter-rxjava" }
+# OkHttp的日志拦截器库
+logging-intercepter = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "logging-intercepter" }
+# RxAndroid库，用于在Android平台使用RxJava
+rxandroid = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rxandroid" }
+# RxLifecycle组件库，用于管理RxJava订阅的生命周期
+rxlifecycle-components = { group = "com.trello.rxlifecycle2", name = "rxlifecycle-components", version.ref = "rxlifecycle-components" }
+
+
+#--------------------------------------------- 五、图片加载与处理
+# Glide图片加载库
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+# Glide注解处理器库，用于生成Glide相关代码
+glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide-compiler" }
+# Android GIF图片处理库
+android-gif-drawable = { group = "pl.droidsonroids.gif", name = "android-gif-drawable", version.ref = "android-gif-drawable" }
+
+
+#--------------------------------------------- 六、UI组件与布局增强
+# AndroidX RecyclerView库，用于创建滚动列表
+recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+# 自定义的RecyclerView分页布局管理器库
+recyclerview-pagerlayout = { group = "com.github.shenbengit", name = "PagerGridLayoutManager", version.ref = "recyclerview-pagerlayout" }
+# AndroidX下拉刷新布局库
+swipe-refresh = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swipe-refresh" }
+# LFRecyclerView库，提供自定义RecyclerView功能
+lfrecyclerview = { group = "com.github.limxing", name = "LFRecyclerView-Android", version.ref = "lfrecyclerview" }
+# RecyclerView侧滑删除库
+recyclerview-swipe = { group = "com.yanzhenjie.recyclerview", name = "x", version.ref = "recyclerview-swipe" }
+# SmartRefreshLayout系列库，实现多种刷新效果
+smart-refresh-kernel = { group = "com.scwang.smart", name = "refresh-layout-kernel", version.ref = "smart-refresh-kernel" }
+smart-refresh-classics = { group = "com.scwang.smart", name = "refresh-header-classics", version.ref = "smart-refresh-classics" }
+smart-refresh-radar = { group = "com.scwang.smart", name = "refresh-header-radar", version.ref = "smart-refresh-radar" }
+smart-refresh-falsify = { group = "com.scwang.smart", name = "refresh-header-falsify", version.ref = "smart-refresh-falsify" }
+smart-refresh-material = { group = "com.scwang.smart", name = "refresh-header-material", version.ref = "smart-refresh-material" }
+smart-refresh-two_level = { group = "com.scwang.smart", name = "refresh-header-two-level", version.ref = "smart-refresh-two_level" }
+smart-refresh-ball = { group = "com.scwang.smart", name = "refresh-footer-ball", version.ref = "smart-refresh-ball" }
+smart-refresh-classics-footer = { group = "com.scwang.smart", name = "refresh-footer-classics", version.ref = "smart-refresh-classics-footer" }
+
+# 倒计时控件库
+countdown = { group = "com.github.iwgang", name = "countdownview", version.ref = "countdown" }
+# 自定义轮播图控件库
+banner = { group = "com.github.donkingliang", name = "CustomBanner", version.ref = "banner" }
+# 沉浸式状态栏管理库及组件
+immerse = { group = "com.gyf.immersionbar", name = "immersionbar", version.ref = "immerse" }
+immerse-components = { group = "com.gyf.immersionbar", name = "immersionbar-components", version.ref = "immerse-components" }
+# 自定义ViewPager标题栏库
+pager-title = { group = "com.gxz.pagerslidingtabstrip", name = "library", version.ref = "pager-title" }
+# 自定义滚轮视图库
+wheelView = { group = "com.wx.wheelview", name = "wheelview", version.ref = "wheelView" }
+
+#--------------------------------------------- 七、组件化与路由管理
+# ARouter API库，用于实现Android组件化路由
+arouter-api = { group = "com.alibaba", name = "arouter-api", version.ref = "arouter-api" }
+# ARouter注解处理器库，用于生成路由表
+arouter-compiler = { group = "com.alibaba", name = "arouter-compiler", version.ref = "arouter-compiler" }
+
+#--------------------------------------------- 八、第三方SDK集成
+# 友盟SDK通用模块
+umsdk-common = { group = "com.umeng.umsdk", name = "common", version.ref = "umsdk-common" }
+# 友盟SDK ASMS模块
+umsdk-asms = { group = "com.umeng.umsdk", name = "asms", version.ref = "umsdk-asms" }
+# 友盟SDK崩溃统计模块
+umsdk-crash = { group = "com.umeng.umsdk", name = "crash", version.ref = "umsdk-crash" }
+# 友盟SDK联想OAID模块
+umsdk-aoid_lenovo = { group = "com.umeng.umsdk", name = "oaid_lenovo", version.ref = "umsdk-aoid_lenovo" }
+# 友盟SDK小米OAID模块
+umsdk-aoid_mi = { group = "com.umeng.umsdk", name = "oaid_mi", version.ref = "umsdk-aoid_mi" }
+# 友盟SDK OPPO OAID模块
+umsdk-aoid_oppo = { group = "com.umeng.umsdk", name = "oaid_oppo", version.ref = "umsdk-aoid_oppo" }
+# 友盟SDK VIVO OAID模块
+umsdk-aoid_vivo = { group = "com.umeng.umsdk", name = "oaid_vivo", version.ref = "umsdk-aoid_vivo" }
+
+# 极光推送SDK及基础库
+jpush = { group = "cn.jiguang.sdk", name = "jpush", version.ref = "jpush" }
+jpush-jcore = { group = "cn.jiguang.sdk", name = "jcore", version.ref = "jpush-jcore" }
+
+# 腾讯云直播SDK
+live-sdk = { group = "com.tencent.liteavsdk", name = "LiteAVSDK_Smart", version.ref = "live-sdk" }
+# 弹幕库
+live-danmu = { group = "com.github.ctiao", name = "DanmakuFlameMaster", version.ref = "live-danmu" }
+
+# 腾讯Bugly系列库，用于崩溃报告和应用升级
+bugly = { group = "com.tencent.bugly", name = "crashreport", version.ref = "bugly" }
+bugly-upgrade = { group = "com.tencent.bugly", name = "crashreport_upgrade", version.ref = "bugly-upgrade" }
+bugly-native = { group = "com.tencent.bugly", name = "nativecrashreport", version.ref = "bugly-native" }
+
+# 腾讯定位SDK
+tencent-location = { group = "com.tencent.map.geolocation", name = "TencentLocationSdk-openplatform", version.ref = "tencent-location" }
+
+#--------------------------------------------- 九、媒体播放相关
+# ExoPlayer媒体播放库及相关组件
+exoplayer = { group = "com.google.android.exoplayer", name = "exoplayer", version.ref = "exoplayer" }
+exoplayer-ui = { group = "com.google.android.exoplayer", name = "exoplayer-ui", version.ref = "exoplayer-ui" }
+exoplayer-core = { group = "com.google.android.exoplayer", name = "exoplayer-core", version.ref = "exoplayer-core" }
+exoplayer-dash = { group = "com.google.android.exoplayer", name = "exoplayer-dash", version.ref = "exoplayer-dash" }
+# 节操视频播放器库
+jiecao-player = { group = "fm.jiecao", name = "jiecaovideoplayer", version.ref = "jiecao-player" }
+
+#--------------------------------------------- 十、功能辅助与自定义库
+# 自定义Android加速库
+xxqaq-android-faster = { group = "com.github.XXQAQ", name = "AndroidFaster", version.ref = "xxqaq-android-faster" }
+# 自定义世界实体库
+xxqaq-worldbean = { group = "com.github.XXQAQ", name = "WorldBean", version.ref = "xxqaq-worldbean" }
+# 自定义Android资源库
+xxqaq-android-resource = { group = "com.github.XXQAQ", name = "AndroidResource", version.ref = "xxqaq-android-resource" }
+
+# 自定义Android支付库
+pay-relinran = { group = "com.github.RelinRan", name = "AndroidPay", version.ref = "pay-relinran" }
+
+# 自定义小红点徽章库
+redBagde = { group = "com.github.chendongde310", name = "SuperBadge", version.ref = "redBagde" }
+# 自定义点赞按钮库
+likeButton = { group = "com.github.jd-alexander", name = "LikeButton", version.ref = "likeButton" }
+# 权限请求库
+permission = { group = "com.yanzhenjie", name = "permission", version.ref = "permission" }
+# 自定义应用更新插件库
+update-plugin = { group = "com.github.MZCretin", name = "AutoUpdateProject", version.ref = "update-plugin" }
+# 自定义图片选择库
+photo-choose = { group = "com.github.HuanTanSheng", name = "EasyPhotos", version.ref = "photo-choose" }
+# 图片选择器库
+picture-selector = { group = "io.github.lucksiege", name = "pictureselector", version.ref = "picture-selector" }
+
+# 自定义选择器视图库
+pickerView = { group = "com.contrarywind", name = "Android-PickerView", version.ref = "pickerView" }
+# 图片预览库
+photoPreview = { group = "com.github.chrisbanes", name = "PhotoView", version.ref = "photoPreview" }
+
+# PDF视图分页库
+pdf = { group = "es.voghdev.pdfviewpager", name = "library", version.ref = "pdf" }
+# MPAndroidChart图表库
+line_chart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "line_chart" }
+
+# LeakCanary调试版本，用于检测内存泄漏
+leak-debug = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leak-debug" }
+# LeakCanary发布版本，无实际检测功能，避免影响性能
+leak-release = { group = "com.squareup.leakcanary", name = "leakcanary-android-no-op", version.ref = "leak-release" }
+
+#--------------------------------------------- 十一、代码生成与注解处理
+# JavaPoet库，用于在运行时生成Java代码
+processor-javapoet = { group = "com.squareup", name = "javapoet", version.ref = "processor-javapoet" }
+# Google Auto公共工具库，用于注解处理
+processor-common = { group = "com.google.auto", name = "auto-common", version.ref = "processor-common" }
+# Google Auto Service注解处理器库，用于自动生成服务配置文件
+processor-service = { group = "com.google.auto.service", name = "auto-service", version.ref = "processor-service" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-kapt = { id = "kotlin-kapt", version.ref = "kotlin" }

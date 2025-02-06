@@ -6,8 +6,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
-//        maven { url 'https://dl.bintray.com/umsdk/release' }
         maven { url 'https://repos.spark-packages.org'}
         maven { url "https://jitpack.io" }
     }
@@ -19,18 +17,6 @@ buildscript {
 //        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-//        maven { url 'https://dl.bintray.com/umsdk/release' }
-        maven { url 'https://repos.spark-packages.org'}
-//        maven { url 'https://dl.bintray.com/hpdx/maven/' }
     }
 }
 

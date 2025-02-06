@@ -70,7 +70,7 @@ dependencies {
     api config.dependencies['okhttp']
 
     implementation config.dependencies['glide']
-    kotlin-kapt config.dependencies['glide-compiler']
+    kapt config.dependencies['glide-compiler']
 
     api config.dependencies['retrofit']
     api config.dependencies['logging-intercepter']

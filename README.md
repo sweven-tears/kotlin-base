@@ -9,7 +9,7 @@
 首先，在项目的 build.gradle（project） 和settings.gradle(取决于你得Gradle版本)文件里面添加:
 
 ```groovy
-// build.gradle(Project)
+// build.gradle.txt(Project)
 allprojects {
     repositories {
         maven { url "https://jitpack.io" }

@@ -1,7 +1,7 @@
 ext {
     android = [
             compileSdkVersion  : 30,
-            buildToolsVersion  : "29.0.3",
+            buildToolsVersion  : "34.0.0",
             minSdkVersion      : 22,
             targetSdkVersion   : 30,
             versionCode        : 1,
@@ -10,7 +10,7 @@ ext {
             targetCompatibility: JavaVersion.VERSION_1_8
     ]
 
-    kotlin = '1.6.10'
+    kotlin = '1.9.24'
 
     signConf = [
             "storeFile"    : 'test.jks',
