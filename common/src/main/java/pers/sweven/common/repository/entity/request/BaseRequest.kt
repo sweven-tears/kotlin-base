@@ -6,6 +6,7 @@ import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import pers.sweven.common.repository.entity.request.BaseRequest.Param
 import java.lang.reflect.Field
+import kotlin.reflect.KClass
 
 
 /**
@@ -200,5 +201,6 @@ open class BaseRequest() {
         val noAdd: Array<String> = [],
         val isAdd: Boolean = true,
         val desc: String = "",
+        val condition: KClass<out Condition> = DefaultCondition::class
     )
 }

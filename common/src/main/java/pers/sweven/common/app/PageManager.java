@@ -38,11 +38,11 @@ public class PageManager {
 
     public Navigation build(Class<?> clazz) {
         this.clazz = clazz;
-        return new Navigation();
+        return new Navigation(this);
     }
 
     public Navigation getExtras() {
-        return new Navigation();
+        return new Navigation(this);
     }
 
     private Bundle getBundle() {
@@ -198,7 +198,17 @@ public class PageManager {
     }
 
 
-    public class Navigation {
+    public static class Navigation {
+        private final PageManager manager;
+
+        public Navigation(PageManager manager){
+            this.manager = manager;
+        }
+
+        public Navigation() {
+            this.manager = new PageManager();
+        }
+
         /**
          * 仅支持 int,double,boolean,string
          *
@@ -236,59 +246,59 @@ public class PageManager {
         }
 
         public Navigation withString(String key, String value) {
-            map.put(key, value);
+            manager.map.put(key, value);
             return this;
         }
 
         public Navigation withInt(String key, int value) {
-            map.put(key, value);
+            manager.map.put(key, value);
             return this;
         }
 
         public Navigation withBoolean(String key, boolean value) {
-            map.put(key, value);
+            manager.map.put(key, value);
             return this;
         }
 
         public Navigation withFloat(String key, float value) {
-            map.put(key, value);
+            manager.map.put(key, value);
             return this;
         }
 
         public Navigation withDouble(String key, Double value) {
-            map.put(key, value);
+            manager.map.put(key, value);
             return this;
         }
 
-        public Navigation withStringArrayList(String key, ArrayList<String> list){
-            map.put(key, list);
+        public Navigation withStringArrayList(String key, ArrayList<String> list) {
+            manager.map.put(key, list);
             return this;
         }
 
         public Navigation withSerializable(String key, Serializable value) {
-            map.put(key, value);
+            manager.map.put(key, value);
             return this;
         }
 
 
         public Navigation addFlags(int flag) {
-            flags = flags | flag;
+            manager.flags = manager.flags | flag;
             return this;
         }
 
         public Navigation setFlags(int flag) {
-            flags = flag;
+            manager.flags = flag;
             return this;
         }
 
         @Deprecated
         public Navigation setOptions(Bundle bundle) {
-            options = bundle;
+            manager.options = bundle;
             return this;
         }
 
         public Navigation setOptions(ActivityOptionsCompat options) {
-            optionsCompat = options;
+            manager.optionsCompat = options;
             return this;
         }
 
@@ -296,7 +306,7 @@ public class PageManager {
          * 禁止重复启动
          */
         public Navigation forbiddenRepeat(boolean forbidden) {
-            forbiddenRepeat = forbidden;
+            manager.forbiddenRepeat = forbidden;
             return this;
         }
 
@@ -305,29 +315,29 @@ public class PageManager {
          * 保留一个
          */
         public Navigation saveOne(boolean saveOne) {
-            keepOnly = saveOne;
+            manager.keepOnly = saveOne;
             return this;
         }
 
         public void navigation() {
-            PageManager.this.navigation(null);
+            manager.navigation(null);
         }
 
         public void navigation(Context context) {
-            PageManager.this.navigation(context);
+            manager.navigation(context);
         }
 
         @Deprecated
         public void navigation(Activity activity, int requestCode) {
-            PageManager.this.navigation(activity, requestCode);
+            manager.navigation(activity, requestCode);
         }
 
         public void navigation(RxAppCompatActivity activity, ActivityResultLauncher<Intent> callback) {
-            PageManager.this.navigation(activity, callback);
+            manager.navigation(activity, callback);
         }
 
         public <I> void navigation(RxAppCompatActivity activity, PageInput<I> input, ActivityResultLauncher<I> callback) {
-            PageManager.this.navigation(activity, input, callback);
+            manager.navigation(activity, input, callback);
         }
     }
 }

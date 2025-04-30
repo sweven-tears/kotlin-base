@@ -60,7 +60,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
         model?.attachLifecycle(this)
         initView()
         model?.let { initObservable(it) }
-        Thread(this::doBusiness).start()
+        doBusiness()
     }
 
     open fun onSecondCreate() {

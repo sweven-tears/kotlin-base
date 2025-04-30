@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.util.StateSet;
@@ -29,9 +30,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import okhttp3.MediaType;
@@ -444,7 +448,19 @@ public class Utils {
         DrawableCompat.setTintList(drawable.mutate(), stateList);
     }
 
-    //------------------------------------------------------------------------------
+    //region test random text
+
+    public static String getRMB(double min, double max) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        double random = (Math.random() * (max - min)) + min;
+        return df.format(random);
+    }
+
+    public static String getRandomTime(String format){
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.CHINA);
+        long randomTime = (long) (Math.random() * (System.currentTimeMillis() - DateUtils.DAY_IN_MILLIS));
+        return dateFormat.format(new Date(randomTime));
+    }
 
     public static String getRandomChinese(int length) {
         StringBuilder builder = new StringBuilder();
@@ -473,7 +489,7 @@ public class Utils {
         return str;
     }
 
-    public static String random(int length) {
+    public static String randomEnglish(int length) {
         String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         return random(length, str);
     }
@@ -487,4 +503,6 @@ public class Utils {
         }
         return builder.toString();
     }
+
+    //endregion
 }

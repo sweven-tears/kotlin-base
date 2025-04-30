@@ -46,7 +46,7 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
         model?.attachLifecycle(this)
         initView()
         model?.let { initObservable(it) }
-        Thread(this::doBusiness).start()
+        doBusiness()
     }
 
     open fun onCreateSelf(savedInstanceState: Bundle?) {

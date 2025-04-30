@@ -13,7 +13,7 @@ import androidx.annotation.IntDef
  * Created by Sweven on 2024/12/11--10:29.
  * Email: sweventears@163.com
  */
-class TextViewHelperBuilder(val textView: TextView? = null) {
+class TextViewHelperBuilder @JvmOverloads constructor(val textView: TextView? = null) {
     var helper: TextViewHelper = TextViewHelper(textView)
 
     /**
@@ -31,6 +31,7 @@ class TextViewHelperBuilder(val textView: TextView? = null) {
      * @param [styles] 更多字符样式
      * @return [TextViewHelperBuilder]
      */
+    @JvmOverloads
     fun addText(
         text: Any? = null,
         textColor: Any? = null,
@@ -43,7 +44,7 @@ class TextViewHelperBuilder(val textView: TextView? = null) {
         clickListener: ClickableSpan? = null,
         typefaceSpan: TypefaceSpan? = null,
         span: Any? = null,
-        vararg styles: CharacterStyle
+        vararg styles: CharacterStyle = arrayOf()
     ): TextViewHelperBuilder {
         if (text == null) {
             return this

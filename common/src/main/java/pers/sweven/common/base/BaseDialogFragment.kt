@@ -47,7 +47,7 @@ abstract class BaseDialogFragment<T : ViewDataBinding, VM : BaseViewModel>(val l
         model = initViewModel()
         initView()
         initObservable(model!!)
-        Thread(this::doBusiness).start()
+        doBusiness()
     }
 
     open fun initViewModel(): VM? {

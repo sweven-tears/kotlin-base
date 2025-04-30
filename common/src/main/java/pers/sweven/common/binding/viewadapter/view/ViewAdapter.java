@@ -1,6 +1,7 @@
 package pers.sweven.common.binding.viewadapter.view;
 
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.databinding.BindingAdapter;
 
@@ -35,5 +36,19 @@ public class ViewAdapter {
     private static void preventQuickClick(View view) {
         view.setEnabled(false);
         view.postDelayed(() -> view.setEnabled(true), 300);
+    }
+
+    @BindingAdapter("android:layout_height")
+    public static void setLayoutHeight(View view, float height) {
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (params == null) {
+            params = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    (int) height
+            );
+        } else {
+            params.height = (int) height;
+        }
+        view.setLayoutParams(params);
     }
 }

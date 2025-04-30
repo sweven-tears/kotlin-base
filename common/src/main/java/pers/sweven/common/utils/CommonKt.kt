@@ -125,17 +125,25 @@ fun TextView.drawables(): Array<Drawable> {
  * 点击查看
  * @param [listener] 听者
  */
-fun View?.onClickView(listener: (View) -> Unit) {
-    Utils.onClickView(listener, this)
-}
+fun View?.onClickView(listener: (View) -> Unit) = onClickView(listener,300).bind(this)
 
 /**
- * 批量点击查看设置
- * @param [listener] 听者
+ * 单击视图时
+ * @param [block] 块
+ * @param [delay] 延迟
  */
-fun <T : View> Array<T>?.onClickView(listener: (View) -> Unit) {
-    if (this != null) {
-        Utils.onClickView(listener, *this)
+inline fun onClickView(crossinline block: (v: View) -> Unit,delay:Long = 300) = ClickViewBuilder(delay) { block(it) }
+
+class ClickViewBuilder(private val delay: Long = 300, private val block: (View) -> Unit) {
+    fun bind(vararg views: View?) {
+        val onClickListener = View.OnClickListener { v: View ->
+            v.isEnabled = false
+            v.postDelayed({ v.isEnabled = true }, delay)
+            block(v)
+        }
+        for (v in views) {
+            v?.setOnClickListener(onClickListener)
+        }
     }
 }
 

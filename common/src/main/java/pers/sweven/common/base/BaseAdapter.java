@@ -25,10 +25,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     private final List<T> list = new ArrayList<>();
     private final int layoutId;
     private final Map<Integer, OnAdapterViewClick<T>> onViewClickMap = new HashMap<>();
-    // 方式二
-    private final Map<Integer, OnAdapterClick<T>> onClickMap = new HashMap<>();
     private OnAdapterViewClick<T> onItemViewClick;
-    private OnAdapterClick<T> onItemClick;
     private OnLoadCompleteListener mLoadCompleteListener;
 
     public BaseAdapter(int layoutId) {
@@ -55,6 +52,9 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     }
 
     public void addData(List<T> list) {
+        if (list == null) {
+            return;
+        }
         int start = getItemCount();
         this.list.addAll(list);
         notifyItemRangeInserted(start, getItemCount() - start);
@@ -99,7 +99,9 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     @SuppressLint("NotifyDataSetChanged")
     public void setList(List<T> list) {
         this.list.clear();
-        this.list.addAll(list);
+        if (list != null) {
+            this.list.addAll(list);
+        }
         notifyDataSetChanged();
     }
 
@@ -112,15 +114,12 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     @Override
     public BaseViewHolder<R> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         R binding = createView(parent, viewType);
-        BaseViewHolder<R> holder = new BaseViewHolder<>(binding,h->initHolderView(h));
+        BaseViewHolder<R> holder = new BaseViewHolder<>(binding, this::initHolderView);
         holder.itemView.setOnClickListener(v -> {
             int position = holder.getAdapterPosition();
             T data = list.get(position);
             if (onItemViewClick != null) {
                 onItemViewClick.onClick(new AdapterIt<>(v, position, data));
-            }
-            if (onItemClick != null) {
-                onItemClick.onClick(position, data);
             }
         });
         for (Integer id : onViewClickMap.keySet()) {
@@ -136,20 +135,6 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
                     click.onClick(new AdapterIt<>(v, position, data));
                 }
             }, view);
-        }
-        for (Integer id : onClickMap.keySet()) {
-            View view = holder.itemView.findViewById(id);
-            if (view == null) {
-                continue;
-            }
-            view.setOnClickListener(v -> {
-                int position = holder.getAdapterPosition();
-                T data = list.get(position);
-                OnAdapterClick<T> click = onClickMap.get(id);
-                if (click != null) {
-                    click.onClick(position, data);
-                }
-            });
         }
         return holder;
     }
@@ -203,12 +188,12 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
 
     @Deprecated
     public void setOnViewClick(OnAdapterClick<T> onViewClick, int resId) {
-        this.onClickMap.put(resId, onViewClick);
+        this.onViewClickMap.put(resId, it -> onViewClick.onClick(it.position,it.data));
     }
 
     @Deprecated
     public void setOnItemClick(OnAdapterClick<T> onItemClick) {
-        this.onItemClick = onItemClick;
+        this.onItemViewClick = it -> onItemClick.onClick(it.position,it.data);
     }
 
     /**
