@@ -1,8 +1,6 @@
 package pers.sweven.common.repository.entity.request
 
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import pers.sweven.common.repository.entity.request.BaseRequest.Param
 import java.lang.reflect.Field
@@ -50,9 +48,13 @@ open class BaseRequest() {
             val name = if (param.value == "") it.name else param.value
             it.isAccessible = true
             val v = it.get(this)
-            val value = if (v is MutableLiveData<*>) {
-                (v.value ?: "").toString()
-            } else (it.get(this) ?: "").toString()
+            val rawValue = if (v is MutableLiveData<*>) {
+                (v.value ?: "")
+            } else (it.get(this) ?: "")
+
+            val converter = param.converter.java.newInstance()
+            val value = converter.convert(rawValue).toString()
+
             if (param.noAdd.contains(value)) {
                 return false
             }
@@ -104,7 +106,10 @@ open class BaseRequest() {
             val name = if (param.value == "") it.name else param.value
             it.isAccessible = true
             val get = it.get(this)
-            val value = if (get is MutableLiveData<*>) get.value else it.get(this)
+            val rawValue = if (get is MutableLiveData<*>) get.value else it.get(this)
+
+            val converter = param.converter.java.newInstance()
+            val value = converter.convert(rawValue)
 
             if (param.noAdd.contains(value.toString())) {
                 return false
@@ -201,6 +206,6 @@ open class BaseRequest() {
         val noAdd: Array<String> = [],
         val isAdd: Boolean = true,
         val desc: String = "",
-        val condition: KClass<out Condition> = DefaultCondition::class
+        val converter: KClass<out ValueConverter> = DefaultConverter::class,
     )
 }

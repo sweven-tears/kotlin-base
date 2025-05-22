@@ -3,7 +3,10 @@ package pers.sweven.common.base
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.trello.rxlifecycle2.LifecycleProvider
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import pers.sweven.common.repository.exception.ApiException
+import pers.sweven.common.rx.RxUtil
 
 /**
  * Created by Sweven on 2021/7/26--21:48.
@@ -38,4 +41,35 @@ open class BaseViewModel : ViewModel() {
     }
 
     fun <T> liveData(): MutableLiveData<T> = MutableLiveData<T>()
+
+    //
+
+    protected val compositeDisposable = CompositeDisposable()
+
+    protected inline fun <T> Observable<T>.requestFlow(
+        crossinline onNext: (T) -> Unit,
+        crossinline onError: (Throwable) -> Unit = { postThrowable(it) },
+        showLoading: Boolean = false,
+        interceptor: () -> Throwable? = { null }
+    ) {
+        interceptor().let {
+            if (it != null) {
+                onError(it)
+                return
+            }
+        }
+
+        compositeDisposable.add(
+            this.compose(RxUtil.applySchedulers(this@BaseViewModel, showLoading))
+                .subscribe({
+                    runCatching { onNext(it) }.onFailure { onError(it) }
+                }, { onError(it) })
+        )
+    }
+
+
+    override fun onCleared() {
+        compositeDisposable.clear()
+        super.onCleared()
+    }
 }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import pers.sweven.common.utils.Utils;
 
@@ -25,6 +26,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
     private final List<T> list = new ArrayList<>();
     private final int layoutId;
     private final Map<Integer, OnAdapterViewClick<T>> onViewClickMap = new HashMap<>();
+    private final Map<Integer, View> views = new HashMap<>();
     private OnAdapterViewClick<T> onItemViewClick;
     private OnLoadCompleteListener mLoadCompleteListener;
 
@@ -76,7 +78,8 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
 
     public void refreshData(T data) {
         for (int i = list.size() - 1; i >= 0; i--) {
-            if (list.get(i).equals(data)) {
+            T t = list.get(i);
+            if (Objects.equals(t, data)) {
                 notifyItemChanged(i, 0);
                 return;
             }
@@ -156,7 +159,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
         }
     }
 
-    protected void initHolderView(BaseViewHolder<R> holder){
+    protected void initHolderView(BaseViewHolder<R> holder) {
 
     }
 
@@ -188,12 +191,12 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
 
     @Deprecated
     public void setOnViewClick(OnAdapterClick<T> onViewClick, int resId) {
-        this.onViewClickMap.put(resId, it -> onViewClick.onClick(it.position,it.data));
+        this.onViewClickMap.put(resId, it -> onViewClick.onClick(it.position, it.data));
     }
 
     @Deprecated
     public void setOnItemClick(OnAdapterClick<T> onItemClick) {
-        this.onItemViewClick = it -> onItemClick.onClick(it.position,it.data);
+        this.onItemViewClick = it -> onItemClick.onClick(it.position, it.data);
     }
 
     /**
@@ -210,6 +213,10 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
 
     public interface OnLoadCompleteListener {
         void onLoadComplete();
+    }
+
+    interface OnInit<H> {
+        void init(H holder);
     }
 
     public static class AdapterIt<T> {
@@ -235,16 +242,12 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
             this.binding = binding;
         }
 
-        public BaseViewHolder(R binding,OnInit<BaseViewHolder<R>> onInit) {
+        public BaseViewHolder(R binding, OnInit<BaseViewHolder<R>> onInit) {
             super(binding.getRoot());
             this.binding = binding;
             if (onInit != null) {
                 onInit.init(this);
             }
         }
-    }
-
-    interface OnInit<H>{
-        void init(H holder);
     }
 }
