@@ -53,7 +53,12 @@ public abstract class BaseBindingViewGroup<T extends ViewDataBinding> extends Fr
     }
 
     protected void setView() {
-        binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), getLayoutId(), (ViewGroup) getRootView(), true);
+
+        if (isInEditMode()) {
+            LayoutInflater.from(getContext()).inflate(getLayoutId(), (ViewGroup) getRootView(), true);
+        }else {
+            binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), getLayoutId(), (ViewGroup) getRootView(), true);
+        }
     }
 
     protected abstract int getLayoutId();

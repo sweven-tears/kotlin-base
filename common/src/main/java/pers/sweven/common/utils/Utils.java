@@ -168,6 +168,18 @@ public class Utils {
         return false;
     }
 
+    public static boolean  isKeyboardActive(View view, boolean forView) {
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            if (forView) {
+                return imm.isActive(view); // 判断输入法是否激活
+            }else {
+                return imm.isActive();
+            }
+        }
+        return false;
+    }
+
     /**
      * 根据EditText所在坐标和用户点击的坐标相对比，来判断是否隐藏键盘，因为当用户点击EditText时则不能隐藏
      *

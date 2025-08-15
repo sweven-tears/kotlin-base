@@ -103,4 +103,8 @@ class TextViewHelperBuilder @JvmOverloads constructor(val textView: TextView? = 
     @IntDef(value = [Typeface.NORMAL, Typeface.BOLD, Typeface.ITALIC, Typeface.BOLD_ITALIC])
     @Retention(AnnotationRetention.SOURCE)
     annotation class TextStyle
+
+    companion object{
+        fun TextView.buildText():TextViewHelperBuilder = TextViewHelperBuilder(this)
+    }
 }

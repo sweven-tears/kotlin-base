@@ -1,5 +1,8 @@
 package pers.sweven.common.utils
 
+import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
@@ -37,7 +40,10 @@ fun Int.toColorStateList(context: Context): ColorStateList? {
 /**
  * 初始化选项卡
  * @param [titles] 标题
- * @param [onTabSelected] 在选定选项卡上
+ * @param [onTabSelected] 切换监听
+ * @param [selectedIndex] 所选索引
+ * @param [icons] 图标
+ * @param [initTab] 如果已初始化，则只使用onTabSelected
  */
 fun TabLayout?.initTab(
     titles: List<String>,
@@ -121,18 +127,32 @@ fun TextView.drawables(): Array<Drawable> {
     return compoundDrawables
 }
 
+@SuppressLint("ClickableViewAccessibility")
+fun View?.onDoubleClickView(listener: (View) -> Unit) {
+    if (this == null) return
+    var lastClickTime = 0L
+    setOnClickListener {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastClickTime < 300) {
+            listener(it)
+        }
+        lastClickTime = currentTime
+    }
+}
+
 /**
  * 点击查看
  * @param [listener] 听者
  */
-fun View?.onClickView(listener: (View) -> Unit) = onClickView(listener,300).bind(this)
+fun View?.onClickView(listener: (View) -> Unit) = onClickView(listener, 300).bind(this)
 
 /**
  * 单击视图时
  * @param [block] 块
  * @param [delay] 延迟
  */
-inline fun onClickView(crossinline block: (v: View) -> Unit,delay:Long = 300) = ClickViewBuilder(delay) { block(it) }
+inline fun onClickView(crossinline block: (v: View) -> Unit, delay: Long = 300) =
+    ClickViewBuilder(delay) { block(it) }
 
 class ClickViewBuilder(private val delay: Long = 300, private val block: (View) -> Unit) {
     fun bind(vararg views: View?) {
@@ -345,5 +365,20 @@ fun <T> List<T>.subArray(start: Int, count: Int = size - start): List<T> {
     }
     val end = minOf(start + count, size)
     return this.subList(start, end)
+}
+
+/**
+ * 复制剪辑
+ * @param [context] 上下文
+ * @param [label] 标签
+ */
+fun CharSequence.copyClip(context: Context, label: CharSequence = "copy_clip") {
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clipData = ClipData.newPlainText(label, this)
+    clipboard.setPrimaryClip(clipData)
+}
+
+fun Int.dp2Px(context: Context): Int {
+    return (this * context.resources.displayMetrics.density).toInt()
 }
 

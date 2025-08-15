@@ -1,4 +1,4 @@
-package com.shop.core.sdk.helper.upload
+package pers.sweven.common.helper.upload
 
 import java.io.File
 

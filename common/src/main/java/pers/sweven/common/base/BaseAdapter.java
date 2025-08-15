@@ -86,7 +86,7 @@ public class BaseAdapter<T, R extends ViewDataBinding> extends RecyclerView.Adap
         }
     }
 
-    public void refreshData(int index) {
+    public void refreshDataAt(int index) {
         notifyItemChanged(index, 0);
     }
 

@@ -12,6 +12,8 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle2.components.support.RxFragment
 import pers.sweven.common.utils.ToastUtils
@@ -22,14 +24,17 @@ import java.lang.reflect.ParameterizedType
  * Created by Sweven on 2021/7/26--21:48.
  * Email: sweventears@163.com
  */
-abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val layoutId: Int) :
-    RxAppCompatActivity() {
+abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(
+    private val layoutId: Int,
+    private val viewModelClass: Class<VM>? = null
+) : RxAppCompatActivity() {
 
     @JvmField
     var loadingDialog: Dialog? = null
     lateinit var binding: V
-    var model: VM? = null
-        private set
+    val model: VM by lazy {
+        initViewModel()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +47,9 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
         }
         getBundle(extras)
         registerLayout()
-        model = initViewModel()
-        model?.attachLifecycle(this)
+        model.attachLifecycle(this)
         initView()
-        model?.let { initObservable(it) }
+        initObservable()
         doBusiness()
     }
 
@@ -65,16 +69,31 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
         getBundle(extras)
     }
 
-    open fun initViewModel(): VM? {
-        var vm: VM? = null
-        try {
+    open fun initViewModel(): VM {
+        return if (viewModelClass != null) {
+            getViewModelSafe(viewModelClass)
+        } else {
             val p = javaClass.genericSuperclass as ParameterizedType?
-            val type = p!!.actualTypeArguments[1] as Class<*>
-            vm = newViewModel(type)
-        } catch (e: Exception) {
-            e.printStackTrace()
+            val arguments = p!!.actualTypeArguments
+            val type = if (arguments.size > 1){
+                arguments[1] as Class<*>
+            }else{
+                throw RuntimeException("未定义第二个泛型类")
+            }
+            if (BaseViewModel::class.java.isAssignableFrom(type)) {
+                getViewModelSafe(type as Class<VM>)
+            } else {
+                throw RuntimeException("第二个泛型类非BaseViewModel")
+            }
         }
-        return vm
+    }
+
+    protected fun <T:VM> getViewModelSafe(clazz: Class<T>):T {
+        return ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return newViewModel(modelClass) as T
+            }
+        })[clazz]
     }
 
     open fun newViewModel(clazz: Class<*>): VM {
@@ -83,20 +102,25 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
 
     lateinit var activity: BaseActivity<*, *>
 
+    open fun initObservable(){
+        initObservable(model)
+    }
+
+    @Deprecated("please use initObservable()", replaceWith = ReplaceWith("initObservable()"))
     open fun initObservable(model: VM) {
-        model.showLoading.observe(this, { show: Boolean? ->
-            if (show != null && show) {
+        model.showLoading.observe(this, { show ->
+            if (show == true) {
                 showLoading()
             } else {
                 dismissLoading()
             }
         })
-        model.throwable.observe(this, { `val`: Throwable? ->
-            if (`val` == null) {
+        model.throwable.observe(this, { throwable ->
+            if (throwable == null) {
                 return@observe
             }
-            `val`.printStackTrace()
-            ToastUtils.showShort(`val`.message)
+            throwable.printStackTrace()
+            ToastUtils.showShort(throwable.message)
         })
 
     }
@@ -181,7 +205,7 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
 
     var mustCloseKeyboard = true
 
-    open fun mustClose(view: View?):Boolean{
+    open fun mustClose(view: View?): Boolean {
         return mustCloseKeyboard && !notMustCloseKeyboardViews.contains(view)
     }
 
@@ -205,14 +229,8 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(private val
 
     override fun onDestroy() {
         super.onDestroy()
-        if (loadingDialog != null) {
-            loadingDialog!!.dismiss()
-            loadingDialog = null
-        }
-        if (model != null) {
-            model!!.detach()
-            model = null
-        }
+        loadingDialog?.dismiss()
+        model.detach()
     }
 
     open fun getBundle(bundle: Bundle) {}

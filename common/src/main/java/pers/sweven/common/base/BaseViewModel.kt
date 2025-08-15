@@ -4,9 +4,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.trello.rxlifecycle2.LifecycleProvider
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import pers.sweven.common.repository.exception.ApiException
 import pers.sweven.common.rx.RxUtil
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sweven on 2021/7/26--21:48.
@@ -50,7 +53,8 @@ open class BaseViewModel : ViewModel() {
         crossinline onNext: (T) -> Unit,
         crossinline onError: (Throwable) -> Unit = { postThrowable(it) },
         showLoading: Boolean = false,
-        interceptor: () -> Throwable? = { null }
+        loadingTimeout: Long = 0, // 新增超时控制参数，默认0表示不启用
+        interceptor: () -> Throwable? = { null },
     ) {
         interceptor().let {
             if (it != null) {
@@ -60,7 +64,7 @@ open class BaseViewModel : ViewModel() {
         }
 
         compositeDisposable.add(
-            this.compose(RxUtil.applySchedulers(this@BaseViewModel, showLoading))
+            this.compose(RxUtil.applySchedulers(this@BaseViewModel, showLoading,false,loadingTimeout))
                 .subscribe({
                     runCatching { onNext(it) }.onFailure { onError(it) }
                 }, { onError(it) })

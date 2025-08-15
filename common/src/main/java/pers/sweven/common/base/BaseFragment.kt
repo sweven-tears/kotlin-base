@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle2.components.support.RxFragment
 import pers.sweven.common.utils.ToastUtils
@@ -16,19 +18,18 @@ import java.lang.reflect.ParameterizedType
  * Created by Sweven on 2021/7/27--21:40.
  * Email: sweventears@163.com
  */
-abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
-    (val layout: Int) : RxFragment() {
+abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>(
+    val layout: Int,
+    var merge: Boolean = false,
+    val viewModelClass: Class<VM>? = null
+) : RxFragment() {
 
-    var merge = false
     lateinit var binding: T
         private set
-    var model: VM? = null
-        private set
-    protected lateinit var hostActivity: RxAppCompatActivity
-
-    constructor(layout: Int, merge: Boolean) : this(layout) {
-        this.merge = merge
+    val model: VM by lazy {
+        initViewModel()
     }
+    protected lateinit var hostActivity: RxAppCompatActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,16 +57,20 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
             bundle = Bundle()
         }
         getBundle(bundle)
-        model = initViewModel()
-        model?.attachLifecycle(this)
+        model.attachLifecycle(this)
         initView()
-        model?.let { initObservable(it) }
+        initObservable()
         doBusiness()
     }
 
     open fun onSecondCreate() {
     }
 
+    open fun initObservable(){
+        initObservable(model)
+    }
+
+    @Deprecated("use new func", replaceWith = ReplaceWith("initObservable()"))
     open fun initObservable(model: VM) {
         model.showLoading.observe(viewLifecycleOwner, { show: Boolean? ->
             if (show != null && show) {
@@ -95,19 +100,34 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
         }
     }
 
-    private fun initViewModel(): VM? {
-        var vm: VM? = null
-        try {
-            val superclass = javaClass.genericSuperclass as ParameterizedType?
-            val clazz = superclass!!.actualTypeArguments[1] as Class<*>
-            vm = newViewModel(clazz)
-        } catch (e: Exception) {
-            e.printStackTrace()
+    open fun initViewModel(): VM {
+        return if (viewModelClass != null) {
+            getViewModelSafe(viewModelClass)
+        } else {
+            val p = javaClass.genericSuperclass as ParameterizedType?
+            val arguments = p!!.actualTypeArguments
+            val type = if (arguments.size > 1) {
+                arguments[1] as Class<*>
+            } else {
+                throw RuntimeException("未定义第二个泛型类")
+            }
+            if (BaseViewModel::class.java.isAssignableFrom(type)) {
+                getViewModelSafe(type as Class<VM>)
+            } else {
+                throw RuntimeException("第二个泛型类非BaseViewModel")
+            }
         }
-        return vm
     }
 
-    open fun newViewModel(clazz:Class<*>):VM{
+    protected fun <T : VM> getViewModelSafe(clazz: Class<T>): T {
+        return ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return newViewModel(modelClass) as T
+            }
+        })[clazz]
+    }
+
+    open fun newViewModel(clazz: Class<*>): VM {
         return clazz.newInstance() as VM
     }
 
@@ -142,10 +162,7 @@ abstract class BaseFragment<T : ViewDataBinding, VM : BaseViewModel>
 
     override fun onDestroy() {
         super.onDestroy()
-        if (model != null) {
-            model!!.detach()
-            model = null
-        }
+        model.detach()
     }
 
     protected abstract fun initView()

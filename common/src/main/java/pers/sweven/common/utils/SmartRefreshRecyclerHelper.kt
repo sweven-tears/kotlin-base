@@ -21,7 +21,7 @@ import pers.sweven.common.base.BaseAdapter
  */
 abstract class SmartRefreshRecyclerHelper(
     val refreshLayout: RefreshLayout,
-    relativeLayoutId: Int,
+    val relativeLayoutId: Int,
     val tvTipsId: Int,
     val tvNoDataId: Int,
     val ivNoDataId: Int,
@@ -31,8 +31,8 @@ abstract class SmartRefreshRecyclerHelper(
     private val GONE = View.GONE
     private val VISIBLE = View.VISIBLE
 
-    private val context = refreshLayout.getContext()
-    private val relativeLayout: RelativeLayout =
+    private val context get() = refreshLayout.getContext()
+    private val relativeLayout: RelativeLayout get() =
         refreshLayout.findViewById(relativeLayoutId) as RelativeLayout
     lateinit var recyclerView: RecyclerView
     var tvTips: TextView

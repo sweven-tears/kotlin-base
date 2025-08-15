@@ -7,6 +7,8 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle2.components.support.RxDialogFragment
 import pers.sweven.common.R
@@ -17,10 +19,14 @@ import java.lang.reflect.ParameterizedType
  * Created by Sweven on 2021/10/26.
  * Email:sweventears@Foxmail.com
  */
-abstract class BaseDialogFragment<T : ViewDataBinding, VM : BaseViewModel>(val layoutId: Int) :
-    RxDialogFragment() {
+abstract class BaseDialogFragment<T : ViewDataBinding, VM : BaseViewModel>(
+    val layoutId: Int,
+    private val viewModelClass: Class<VM>? = null
+) : RxDialogFragment() {
     lateinit var binding: T
-    var model: VM? = null
+    val model: VM by lazy {
+        initViewModel()
+    }
     protected val hostActivity: RxAppCompatActivity
         get() = activity as RxAppCompatActivity
 
@@ -44,26 +50,44 @@ abstract class BaseDialogFragment<T : ViewDataBinding, VM : BaseViewModel>(val l
             bundle = Bundle()
         }
         getBundle(bundle)
-        model = initViewModel()
+        model.attachLifecycle(this)
         initView()
-        initObservable(model!!)
+        initObservable()
         doBusiness()
     }
 
-    open fun initViewModel(): VM? {
-        var vm: VM? = null
-        try {
-            val superclass = javaClass.genericSuperclass as ParameterizedType?
-            val clazz = superclass!!.actualTypeArguments[1] as Class<*>
-            vm = clazz.newInstance() as VM
-        } catch (e: Exception) {
-            e.printStackTrace()
+    open fun initViewModel(): VM {
+        return if (viewModelClass != null) {
+            getViewModelSafe(viewModelClass)
+        } else {
+            val p = javaClass.genericSuperclass as ParameterizedType?
+            val arguments = p!!.actualTypeArguments
+            val type = if (arguments.size > 1) {
+                arguments[1] as Class<*>
+            } else {
+                throw RuntimeException("未定义第二个泛型类")
+            }
+            if (BaseViewModel::class.java.isAssignableFrom(type)) {
+                getViewModelSafe(type as Class<VM>)
+            } else {
+                throw RuntimeException("第二个泛型类非BaseViewModel")
+            }
         }
-        vm?.attachLifecycle(this)
-        return vm
     }
 
-    open fun initObservable(model: VM) {
+    protected fun <T : VM> getViewModelSafe(clazz: Class<T>): T {
+        return ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return newViewModel(modelClass) as T
+            }
+        })[clazz]
+    }
+
+    open fun newViewModel(clazz: Class<*>): VM {
+        return clazz.newInstance() as VM
+    }
+
+    open fun initObservable() {
         model.showLoading.observe(this, { show: Boolean? ->
             if (show != null && show) {
                 showLoading()
@@ -74,6 +98,15 @@ abstract class BaseDialogFragment<T : ViewDataBinding, VM : BaseViewModel>(val l
         model.throwable.observe(this, { throwable: Throwable? ->
             showError(throwable?.message)
         })
+        initObservable(model)
+    }
+
+    /**
+     * use it not yet
+     * @param [model] 型
+     */
+    @Deprecated("please use initObservable()", replaceWith = ReplaceWith("initObservable()"))
+    open fun initObservable(model: VM) {
     }
 
     open fun showError(message: String?) {

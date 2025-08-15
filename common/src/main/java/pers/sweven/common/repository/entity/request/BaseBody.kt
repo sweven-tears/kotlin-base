@@ -109,7 +109,7 @@ open class BaseBody {
     fun checkNullByDesc(vararg exceptName: String): HashMap<String, String> {
         return processAllFields { field, _, value ->
             // 获取字段上的 Param 注解
-            val param = field.getAnnotation(Param::class.java)
+            val param = field.getAnnotation(BodyParam::class.java)
             // 如果注解为空、字段不应该被添加或者值不满足添加条件，则返回 null
             if (param == null || !shouldAddField(param) || !shouldAddValue(param, value)) {
                 return@processAllFields null
@@ -170,7 +170,7 @@ open class BaseBody {
             // 设置字段的可访问性，以便可以获取私有字段的值
             field.isAccessible = true
             // 获取字段上的 Param 注解
-            val param = field.getAnnotation(Param::class.java)
+            val param = field.getAnnotation(BodyParam::class.java)
             // 如果字段不应该被添加，则返回 false
             if (!shouldAddField(param)) return false
 
@@ -217,7 +217,7 @@ open class BaseBody {
      * @param [param] 参数
      * @return [Boolean]
      */
-    private fun shouldAddField(param: Param?): Boolean {
+    private fun shouldAddField(param: BodyParam?): Boolean {
         // 如果 Param 注解不为空且 isAdd 属性为 true，则返回 true
         return param?.isAdd == true
     }
@@ -228,7 +228,7 @@ open class BaseBody {
      * @param [value] 价值
      * @return [Boolean]
      */
-    private fun shouldAddValue(param: Param?, value: Any?): Boolean {
+    private fun shouldAddValue(param: BodyParam?, value: Any?): Boolean {
         // 如果注解中有指定条件类
         param?.condition?.let { conditionClass ->
             // 创建条件类的实例
@@ -246,7 +246,7 @@ open class BaseBody {
      * @param [param] 参数
      * @return [String]
      */
-    private fun resolveKey(field: Field, param: Param?): String {
+    private fun resolveKey(field: Field, param: BodyParam?): String {
         return param?.value?.takeIf { it.isNotEmpty() }
             ?: field.name
     }
@@ -294,7 +294,7 @@ open class BaseBody {
      */
     @Retention(AnnotationRetention.RUNTIME)
     @Target(AnnotationTarget.FIELD)
-    annotation class Param(
+    annotation class BodyParam(
         @get:JvmName("paramValue") val value: String = "",
         @get:JvmName("noAddValues") val noAdd: Array<String> = [],
         @get:JvmName("isIncluded") val isAdd: Boolean = true,

@@ -1,5 +1,6 @@
 package pers.sweven.common.helper.photo
 
+import android.net.Uri
 import java.util.*
 
 /**
@@ -60,14 +61,17 @@ class PhotosHelper private constructor(val factory: Factory) {
 
     data class PhotoData(
         var name: String = "",
-        var path: String = "",
+        var filePath: String = "",
+        var uriPath: String = "",
         var type: String = "",
         var width: Int = 0,
         var height: Int = 0,
         var size: Long = 0,
         var duration: Long = 0,
         var time: Long = 0,
-    )
+    ) {
+        val uri: Uri get() = Uri.parse(uriPath)
+    }
 
     class DefaultFactory : Factory {
         override var count: Int = 1

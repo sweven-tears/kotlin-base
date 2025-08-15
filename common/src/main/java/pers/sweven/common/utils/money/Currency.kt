@@ -10,9 +10,7 @@ import kotlin.math.roundToLong
 /**
  * 货币
  * @param [mainUnit] 主单位
- * @param [subUnit1] 子单元1
- * @param [subUnit2] 子单元2
- * @param [subUnit3] 子单元3
+ * @param [subUnits] 子单元
  * @param [isNegative] 为负数
  * @param [currencyCode] 货币代码
  * Created by Sweven on 2025/5/6--14:36.
@@ -20,12 +18,14 @@ import kotlin.math.roundToLong
  */
 data class Currency(
     var mainUnit: Long,
-    var subUnit1: Int = 0,
-    var subUnit2: Int = 0,
-    var subUnit3: Int = 0,
+    var subUnits: IntArray = intArrayOf(0, 0, 0),
     var isNegative: Boolean = false,
     var currencyCode: String = "CNY"
 ) : Comparable<Currency> {
+    val subUnit1: Int get() = subUnits.getOrElse(0) { 0 }
+    val subUnit2: Int get() = subUnits.getOrElse(1) { 0 }
+    val subUnit3: Int get() = subUnits.getOrElse(2) { 0 }
+
     // region 核心方法
     companion object {
         // 向外暴露
@@ -69,11 +69,12 @@ data class Currency(
             val decimalPart = absAmount - mainUnit
 
             val totalSubunits = (decimalPart * 10.0.pow(meta.decimalPlaces)).roundToInt()
+            val subUnits = IntArray(meta.decimalPlaces) { level ->
+                getSubUnit(totalSubunits, meta.decimalPlaces, level + 1)
+            }
             return Currency(
                 mainUnit = mainUnit,
-                subUnit1 = getSubUnit(totalSubunits, meta.decimalPlaces, 1),
-                subUnit2 = getSubUnit(totalSubunits, meta.decimalPlaces, 2),
-                subUnit3 = getSubUnit(totalSubunits, meta.decimalPlaces, 3),
+                subUnits = subUnits,
                 isNegative = isNegative,
                 currencyCode = meta.code
             )
@@ -143,13 +144,11 @@ data class Currency(
      */
     fun decimalPart(): Int {
         val meta = CurrencyRegistry.getMeta(currencyCode)
-        return when (meta.decimalPlaces) {
-            1 -> subUnit1
-            2 -> subUnit1 * 10 + subUnit2
-            3 -> subUnit1 * 100 + subUnit2 * 10 + subUnit3
-            else -> 0 // 0位小数（如JPY）或无定义
+        return subUnits.take(meta.decimalPlaces).foldIndexed(0) { index, acc, value ->
+            acc + (value * 10.0.pow(meta.decimalPlaces - index - 1)).toInt()
         }
     }
+
 
     /**
      * 获取完整小数部分字符串（保留前导零）
@@ -159,11 +158,9 @@ data class Currency(
      */
     fun decimalString(): String {
         val meta = CurrencyRegistry.getMeta(currencyCode)
-        return buildString {
-            if (meta.decimalPlaces >= 1) append(subUnit1)
-            if (meta.decimalPlaces >= 2) append(subUnit2)
-            if (meta.decimalPlaces >= 3) append(subUnit3)
-        }.padEnd(meta.decimalPlaces, '0')
+        return subUnits.take(meta.decimalPlaces)
+            .joinToString("") { it.toString() }
+            .padEnd(meta.decimalPlaces, '0')
     }
 
     /**
@@ -176,9 +173,7 @@ data class Currency(
 
         return currencyCode == other.currencyCode &&
                 mainUnit == other.mainUnit &&
-                subUnit1 == other.subUnit1 &&
-                subUnit2 == other.subUnit2 &&
-                subUnit3 == other.subUnit3 &&
+                subUnits.contentEquals(other.subUnits) &&
                 isNegative == other.isNegative
     }
 
@@ -189,9 +184,7 @@ data class Currency(
         return Objects.hash(
             currencyCode,
             mainUnit,
-            subUnit1,
-            subUnit2,
-            subUnit3,
+            subUnits.contentHashCode(),
             isNegative
         )
     }
@@ -284,12 +277,11 @@ data class Currency(
 
     private fun toSmallestSubunits(): Long {
         val meta = CurrencyRegistry.getMeta(currencyCode)
-        val value = mainUnit * 10.0.pow(meta.decimalPlaces) +
-                subUnit1 * 10.0.pow(meta.decimalPlaces - 1) +
-                subUnit2 * 10.0.pow(meta.decimalPlaces - 2) +
-                subUnit3 * 10.0.pow(meta.decimalPlaces - 3)
-        val signedValue = if (isNegative) -value else value
-        return signedValue.roundToLong()
+        val decimalValue = subUnits.take(meta.decimalPlaces).foldIndexed(0L) { index, acc, value ->
+            acc + (value * 10.0.pow(meta.decimalPlaces - index - 1).toLong())
+        }
+        val total = mainUnit * 10.0.pow(meta.decimalPlaces).toLong() + decimalValue
+        return if (isNegative) -total else total
     }
 
     private fun fromSmallestSubunits(
@@ -310,11 +302,13 @@ data class Currency(
             return ((total / divide) % 10).toInt()
         }
 
+        val subUnits = IntArray(decimalPlaces) { level ->
+            unit(remainder, decimalPlaces, level + 1)
+        }
+
         return Currency(
             mainUnit = mainUnit,
-            subUnit1 = unit(remainder, decimalPlaces, 1),
-            subUnit2 = unit(remainder, decimalPlaces, 2),
-            subUnit3 = unit(remainder, decimalPlaces, 3),
+            subUnits = subUnits,
             isNegative = isNegative,
             currencyCode = meta.code
         )
@@ -325,10 +319,10 @@ data class Currency(
 
     fun toDouble(): Double {
         val meta = CurrencyRegistry.getMeta(currencyCode)
-        val decimalValue = subUnit1 * 10.0.pow(meta.decimalPlaces - 1) +
-                subUnit2 * 10.0.pow(meta.decimalPlaces - 2) +
-                subUnit3 * 10.0.pow(meta.decimalPlaces - 3)
-        val absolute = mainUnit + decimalValue / 10.0.pow(meta.decimalPlaces)
+        val decimalValue = subUnits.take(meta.decimalPlaces).foldIndexed(0.0) { index, acc, value ->
+            acc + value / 10.0.pow(index + 1)
+        }
+        val absolute = mainUnit + decimalValue
         return if (isNegative) -absolute else absolute
     }
 
@@ -339,15 +333,17 @@ data class Currency(
             append(mainUnit)
             if (meta.decimalPlaces > 0) {
                 append(".")
-                append(subUnit1)
-                if (meta.decimalPlaces >= 2) append(subUnit2)
-                if (meta.decimalPlaces >= 3) append(subUnit3)
+                subUnits.take(meta.decimalPlaces).forEach { append(it) }
             }
         }
     }
 
+    /**
+     * 带单位的货币打印
+     */
     fun toUnitString(): String =
         CurrencyRegistry.getMeta(currencyCode).symbol + toString()
+
 
     // endregion
 }
@@ -358,10 +354,10 @@ data class CurrencyMeta(
     val symbol: String,    // 货币符号
     val decimalPlaces: Int // 小数位数（如人民币3位，美元2位）
 ) {
-    init {
-        require(code.length == 3) { "货币代码必须为3位字母" }
-        require(decimalPlaces in 0..3) { "小数位数需在0-3之间" }
-    }
+//    init {
+//        require(code.length == 3) { "货币代码必须为3位字母" }
+//        require(decimalPlaces in 0..3) { "小数位数需在0-3之间" }
+//    }
 }
 
 // ====================== 货币元数据管理器 ======================
@@ -378,7 +374,7 @@ object CurrencyRegistry {
     // 在 CurrencyRegistry 的 init 块或应用启动时调用
     fun registerCommonCurrencies() {
         // 亚太地区
-        register(CurrencyMeta("CNY", "￥", 3))    // 人民币
+        register(CurrencyMeta("CNY", "￥", 2))    // 人民币
         register(CurrencyMeta("JPY", "¥", 0))    // 日元
         register(CurrencyMeta("KRW", "₩", 0))    // 韩元
         register(CurrencyMeta("INR", "₹", 2))    // 印度卢比
