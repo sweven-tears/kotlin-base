@@ -75,9 +75,9 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(
         } else {
             val p = javaClass.genericSuperclass as ParameterizedType?
             val arguments = p!!.actualTypeArguments
-            val type = if (arguments.size > 1){
+            val type = if (arguments.size > 1) {
                 arguments[1] as Class<*>
-            }else{
+            } else {
                 throw RuntimeException("未定义第二个泛型类")
             }
             if (BaseViewModel::class.java.isAssignableFrom(type)) {
@@ -88,7 +88,7 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(
         }
     }
 
-    protected fun <T:VM> getViewModelSafe(clazz: Class<T>):T {
+    protected fun <T : VM> getViewModelSafe(clazz: Class<T>): T {
         return ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return newViewModel(modelClass) as T
@@ -102,7 +102,7 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(
 
     lateinit var activity: BaseActivity<*, *>
 
-    open fun initObservable(){
+    open fun initObservable() {
         initObservable(model)
     }
 
