@@ -8,4 +8,5 @@
     <item name="smartRelativeLayout" type="id" />
     <item name="smartRecyclerView" type="id" />
     <item name="smartTop" type="id" />
+    <item name="noDataView" type="id" />
 </resources>

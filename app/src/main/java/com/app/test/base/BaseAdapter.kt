@@ -1,4 +1,4 @@
-package com.yxm.scrm.base
+package com.app.test.base
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

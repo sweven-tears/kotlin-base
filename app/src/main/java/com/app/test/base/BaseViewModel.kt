@@ -62,7 +62,7 @@ open class BaseViewModel : Base() {
         view: View,
         page: String,
         url: String = "",
-        options: ActivityOptionsCompat? = null
+        options: ActivityOptionsCompat? = null,
     ) {
         PageManager.getInstance()
             .build(page)

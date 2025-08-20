@@ -1,15 +1,14 @@
 package com.app.test.feature
 
 import com.app.test.R
-import com.app.test.databinding.ActivitySplashBinding
+import com.app.test.base.BaseActivity
+import com.app.test.base.BaseViewModel
 import com.app.test.data.event.Event
-import pers.sweven.common.base.BaseActivity
-import pers.sweven.common.base.BaseViewModel
+import com.app.test.databinding.ActivitySplashBinding
 import pers.sweven.common.rx.RxBus
 import pers.sweven.common.rx.RxBusObserver
 import pers.sweven.common.rx.RxUtil
 import pers.sweven.common.utils.ToastUtils
-import pers.sweven.common.widget.SItemDecoration
 
 class SplashActivity :
     BaseActivity<ActivitySplashBinding, BaseViewModel>(R.layout.activity_splash) {
@@ -26,8 +25,6 @@ class SplashActivity :
                     super.onError(e)
                 }
             })
-
-        SItemDecoration(20)
     }
 
     override fun doBusiness() {
