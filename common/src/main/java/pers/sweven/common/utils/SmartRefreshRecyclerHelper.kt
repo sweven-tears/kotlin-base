@@ -22,25 +22,25 @@ import pers.sweven.common.base.BaseAdapter
 abstract class SmartRefreshRecyclerHelper(
     val refreshLayout: RefreshLayout,
     val relativeLayoutId: Int,
-    val tvTipsId: Int,
-    val tvNoDataId: Int,
-    val ivNoDataId: Int,
-    val smartTopId: Int,
-    val smartTopView: ((RelativeLayout) -> ImageView?)?,
+    val tvTipsId: Int = View.NO_ID,
+    val tvNoDataId: Int = View.NO_ID,
+    val ivNoDataId: Int = View.NO_ID,
+    val smartTopId: Int = View.NO_ID,
+    val smartTopView: ((RelativeLayout) -> ImageView?)? = null,
 ) {
     private val GONE = View.GONE
     private val VISIBLE = View.VISIBLE
 
     private val context get() = refreshLayout.getContext()
-    private val relativeLayout: RelativeLayout get() =
-        refreshLayout.findViewById(relativeLayoutId) as RelativeLayout
+    private val relativeLayout: RelativeLayout get() = refreshLayout.findViewById(relativeLayoutId)
     lateinit var recyclerView: RecyclerView
-    var tvTips: TextView
-    var includeNoData: View? = null
-    var ivNoData: ImageView? = null
-    var tvNoData: TextView? = null
-    private var noDataImage: Int = 0
-    private var noDataText: CharSequence = ""
+
+    var tvTips: TextView? = null
+
+    var placeHolderView: PlaceHolderView? = null
+    val includeNoData get() = placeHolderView?.targetView
+
+    var pinTopView: PlaceHolderView? = null
 
     var refreshEnable: Boolean = false
         set(value) {
@@ -49,15 +49,21 @@ abstract class SmartRefreshRecyclerHelper(
         }
 
     init {
-        tvTips = TextView(context).apply {
-            id = tvTipsId
-            textSize = 15f
-            visibility = View.VISIBLE
-            setTextColor(Color.GRAY)
-            val params2 = RelativeLayout.LayoutParams(-2, -2)
-            params2.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE)
-            params2.topMargin = dip2px(10f)
-            relativeLayout.addView(this, params2)
+        buildView()
+    }
+
+    private fun buildView() {
+        if (tvTipsId != View.NO_ID) {
+            tvTips = refreshLayout.findViewById(tvTipsId) ?: TextView(context).apply {
+                id = tvTipsId
+                textSize = 15f
+                visibility = View.VISIBLE
+                setTextColor(Color.GRAY)
+                val params2 = RelativeLayout.LayoutParams(-2, -2)
+                params2.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE)
+                params2.topMargin = dip2px(10f)
+                relativeLayout.addView(this, params2)
+            }
         }
 
         for (child in relativeLayout.children) {
@@ -68,17 +74,7 @@ abstract class SmartRefreshRecyclerHelper(
                 }
             }
         }
-        addNoData(relativeLayout)
-
-        recyclerView
-    }
-
-
-    private fun addNoData(parent: RelativeLayout) {
-        val noData = setNoData(parent)
-        includeNoData = noData.first
-        ivNoData = noData.second.first
-        tvNoData = noData.second.second
+        placeHolderView = onPlaceHolderView(relativeLayout)
     }
 
     open fun setNoData(parent: RelativeLayout): Pair<ViewGroup, Pair<ImageView, TextView>> {
@@ -105,14 +101,13 @@ abstract class SmartRefreshRecyclerHelper(
         return Pair(relativeLayout, (imageView to textView))
     }
 
+    open fun onPlaceHolderView(parent: RelativeLayout): PlaceHolderView =
+        PictureTextPlaceHolder(setNoData(parent).first, tvNoDataId, ivNoDataId)
+
     fun setHeadText(text: CharSequence) {
-        tvTips.post {
-            tvTips.text = text
-            if (text.trim().isNotEmpty()) {
-                tvTips.visibility = VISIBLE
-            } else {
-                tvTips.visibility = GONE
-            }
+        tvTips?.post {
+            tvTips?.text = text
+            tvTips?.isVisible = text.trim().isNotEmpty()
         }
     }
 
@@ -126,46 +121,46 @@ abstract class SmartRefreshRecyclerHelper(
     }
 
     fun showNoData(show: Boolean) {
-        if (refreshEnable && tvTips.text?.trim()?.isNotEmpty() == true) {
-            tvTips.visibility = if (show) VISIBLE else GONE
+        if (refreshEnable && tvTips?.text?.trim()?.isNotEmpty() == true) {
+            tvTips?.visibility = if (show) VISIBLE else GONE
         }
         recyclerView.visibility = if (show) GONE else VISIBLE
 
-        includeNoData?.visibility = if (show) VISIBLE else GONE
-
         if (show) {
-            ivNoData?.setImageResource(noDataImage)
-            tvNoData?.text = noDataText
+            placeHolderView?.show()
+        } else {
+            placeHolderView?.hidden()
         }
     }
 
     fun showNoData(noData: Pair<Int, CharSequence>) {
-        if (refreshEnable && tvTips.text?.trim()?.isNotEmpty() == true) {
-            tvTips.visibility = GONE
+        if (refreshEnable && tvTips?.text?.trim()?.isNotEmpty() == true) {
+            tvTips?.visibility = GONE
         }
 
         recyclerView.visibility = GONE
 
-        includeNoData?.visibility = VISIBLE
-
-        ivNoData?.setImageResource(noData.first)
-        tvNoData?.text = noData.second
+        placeHolderView?.show()
+        (placeHolderView as? PictureTextPlaceHolder)?.tempContent(noData.first, noData.second)
     }
 
-    fun addScrollTopButton(): View? {
-        var view0 = relativeLayout.findViewById<ImageView>(smartTopId)
+    fun addScrollTopButton(): PlaceHolderView? {
+        var view0 = relativeLayout.findViewById<ImageView>(smartTopId)?.let { PlaceHolderView(it) }
         if (view0 == null) {
-            view0 = smartTopView?.invoke(relativeLayout)?.apply {
+            view0 = onPinTopViewHolder(relativeLayout)?.apply {
                 this.id = smartTopId
             }
         }
 
-        view0.onClickView {
+        view0?.setOnClickView {
             scrollToTop()
             it.isVisible = false
         }
         return view0
     }
+
+    fun onPinTopViewHolder(parent: RelativeLayout): PlaceHolderView? =
+        smartTopView?.invoke(parent)?.let { PlaceHolderView(it) } ?: pinTopView
 
     /**
      * 下一页||  please rewrite this method
@@ -180,7 +175,7 @@ abstract class SmartRefreshRecyclerHelper(
         showHeadTips: Boolean,
         nextPage: (page: Int) -> Unit,
     ) {
-        tvTips.visibility = GONE
+        tvTips?.visibility = GONE
         if (page == null) {
             if (refreshLayout.isLoading()) {
                 refreshLayout.finishLoadMore(2, false, true)
@@ -192,7 +187,6 @@ abstract class SmartRefreshRecyclerHelper(
                 refreshLayout.setEnableLoadMore(false)
                 if (showHeadTips) {
                     setHeadText("下拉刷新")
-                    tvTips.visibility = VISIBLE
                 }
             }
             return
@@ -261,22 +255,17 @@ abstract class SmartRefreshRecyclerHelper(
         }
 
         fun setNoData(noData: Pair<Int, CharSequence>): Builder {
-            noDataImage = noData.first
-            noDataText = noData.second
-            tvNoData?.text = noData.second
-            ivNoData?.setImageResource(noData.first)
+            (placeHolderView as? PictureTextPlaceHolder)?.setContent(noData.first, noData.second)
             return this
         }
 
         fun setNoDataText(text: CharSequence): Builder {
-            noDataText = text
-            tvNoData?.text = text
+            (placeHolderView as? PictureTextPlaceHolder)?.setContent(text = text)
             return this
         }
 
         fun setNoDataImage(@DrawableRes image: Int): Builder {
-            noDataImage = image
-            ivNoData?.setImageResource(image)
+            (placeHolderView as? PictureTextPlaceHolder)?.setContent(imageRes = image)
             return this
         }
 
@@ -302,7 +291,7 @@ abstract class SmartRefreshRecyclerHelper(
         }
 
         fun setHeadText(text: CharSequence): Builder {
-            tvTips.text = text
+            tvTips?.text = text
             return this
         }
 
@@ -319,7 +308,7 @@ abstract class SmartRefreshRecyclerHelper(
         fun setOnClickNoDataViewListener(onClickNoDataViewListener: View.OnClickListener?): Builder {
             Utils.onClickView({
                 onClickNoDataViewListener?.onClick(it)
-            }, ivNoData, tvNoData)
+            }, placeHolderView?.targetView)
             return this
         }
 
@@ -341,7 +330,7 @@ abstract class SmartRefreshRecyclerHelper(
                         if (layoutManager is LinearLayoutManager) {
                             position = layoutManager.findFirstVisibleItemPosition()
                         }
-                        button.isVisible = position > topCount
+                        if (position > topCount) button.show() else button.hidden()
                     }
                 })
             }
@@ -376,6 +365,70 @@ abstract class SmartRefreshRecyclerHelper(
             fun getCurrent(): Int
 
             fun getLast(): Int
+        }
+    }
+
+    open class PlaceHolderView(view: View) {
+        open val targetView: View = view.also { if (it.id == 0) it.id = View.generateViewId() }
+
+        protected val context: Context = view.context
+
+        fun <T> findViewById(id: Int): T = targetView.findViewById(id)
+
+        var isVisible: Boolean
+            get() = targetView.isVisible
+            set(value) {
+                targetView.isVisible = value
+            }
+
+        var id: Int
+            get() = targetView.id
+            set(value) {
+                targetView.id = value
+            }
+
+        open fun show() {
+            isVisible = true
+        }
+
+        open fun hidden() {
+            isVisible = false
+        }
+
+        open fun setOnClickView(listener: (View) -> Unit) {
+            targetView.onClickView(listener)
+        }
+    }
+
+    class PictureTextPlaceHolder(
+        view: View,
+        textViewId: Int,
+        imageViewId: Int,
+        private var imageRes: Int = 0,
+        private var text: CharSequence = "暂无数据",
+    ) : PlaceHolderView(view) {
+        private val imageView: ImageView? = targetView.findViewById(imageViewId)
+        private val textView: TextView? = targetView.findViewById(textViewId)
+
+        init {
+            setContent(imageRes, text)
+        }
+
+        fun tempContent(imageRes: Int = this.imageRes, text: CharSequence = this.text) {
+            imageView?.setImageResource(imageRes)
+            textView?.text = text
+        }
+
+        override fun show() {
+            super.show()
+            setContent()
+        }
+
+        fun setContent(imageRes: Int = this.imageRes, text: CharSequence = this.text) {
+            this.imageRes = imageRes
+            this.text = text
+            imageView?.setImageResource(imageRes)
+            textView?.text = text
         }
     }
 
