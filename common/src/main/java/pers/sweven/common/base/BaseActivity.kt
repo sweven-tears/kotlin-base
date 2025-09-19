@@ -175,19 +175,14 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel>(
         if (currentFragment == tagFragment) {
             return
         }
-        if (!tagFragment.isAdded) {
-            if (currentFragment != null) {
-                transaction.hide(currentFragment!!)
-            }
-            transaction
-                .add(containerId, tagFragment)
-                .commitAllowingStateLoss()
-        } else {
-            if (currentFragment != null) {
-                transaction.hide(currentFragment!!)
-            }
+        currentFragment?.let { transaction.hide(it) }
+        if (tagFragment.isAdded) {
             transaction
                 .show(tagFragment)
+                .commitAllowingStateLoss()
+        } else {
+            transaction
+                .add(containerId, tagFragment)
                 .commitAllowingStateLoss()
         }
         currentFragment = tagFragment

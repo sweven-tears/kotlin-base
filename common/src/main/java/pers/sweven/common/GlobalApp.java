@@ -5,6 +5,7 @@ import android.app.Application;
 import android.os.Bundle;
 
 import pers.sweven.common.app.AppManager;
+import pers.sweven.common.app.PageInit;
 import pers.sweven.common.utils.cache.CacheManager;
 
 /**
@@ -14,38 +15,6 @@ import pers.sweven.common.utils.cache.CacheManager;
  */
 public class GlobalApp {
     private static volatile GlobalApp instance;
-    private final Application.ActivityLifecycleCallbacks mCallbacks = new Application.ActivityLifecycleCallbacks() {
-
-        @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-            AppManager.getInstance().addActivity(activity);
-        }
-
-        @Override
-        public void onActivityStarted(Activity activity) {
-        }
-
-        @Override
-        public void onActivityResumed(Activity activity) {
-        }
-
-        @Override
-        public void onActivityPaused(Activity activity) {
-        }
-
-        @Override
-        public void onActivityStopped(Activity activity) {
-        }
-
-        @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-        }
-
-        @Override
-        public void onActivityDestroyed(Activity activity) {
-            AppManager.getInstance().removeActivity(activity);
-        }
-    };
     private Application application;
 
     public static GlobalApp getInstance() {
@@ -72,11 +41,11 @@ public class GlobalApp {
     }
 
     public void registerActivity() {
-        application.registerActivityLifecycleCallbacks(mCallbacks);
+        application.registerActivityLifecycleCallbacks(PageInit.getInstance());
     }
 
     public void unRegisterActivity() {
-        application.unregisterActivityLifecycleCallbacks(mCallbacks);
+        application.unregisterActivityLifecycleCallbacks(PageInit.getInstance());
     }
 
     public void initCacheManager() {

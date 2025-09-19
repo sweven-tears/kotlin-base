@@ -191,40 +191,38 @@ abstract class SmartRefreshRecyclerHelper(
             }
             return
         }
-        page.getMetaInfo()?.apply {
-            if (getCurrent() == 1) {
-                val list = page.getList().getList()
-                adapter.list = list
-                scrollToTop()
+        if (page.current == 1) {
+            val list = page.list.getList()
+            adapter.list = list
+            scrollToTop()
 
-                refreshLayout.finishRefresh(true)
-            } else {
-                adapter.addData(page.getList().getList())
-            }
-            // 判断当前recyclerview是否为空数据，并设置空提示
-            if (adapter.list.isNotEmpty()) {
-                showNoData(false)
-            } else {
-                showNoData(true)
-            }
+            refreshLayout.finishRefresh(true)
+        } else {
+            adapter.addData(page.list.getList())
+        }
+        // 判断当前recyclerview是否为空数据，并设置空提示
+        if (adapter.list.isNotEmpty()) {
+            showNoData(false)
+        } else {
+            showNoData(true)
+        }
 
-            if (getCurrent() < getLast()) {
-                // 加载下一页
-                refreshLayout.setEnableLoadMore(true)
-                refreshLayout.setNoMoreData(false)
-                if (refreshLayout.isLoading()) {
-                    refreshLayout.finishLoadMore(2, true, false)
-                }
-                refreshLayout.setOnLoadMoreListener {
-                    nextPage.invoke(getCurrent() + 1)
-                }
-            } else {
-                // 没有下一页的处理
-                refreshLayout.setEnableLoadMore(false)
-                refreshLayout.setNoMoreData(true)
-                if (getCurrent() > 1 && refreshLayout.isLoading()) {
-                    refreshLayout.finishLoadMore(2, true, true)
-                }
+        if (page.current < page.last) {
+            // 加载下一页
+            refreshLayout.setEnableLoadMore(true)
+            refreshLayout.setNoMoreData(false)
+            if (refreshLayout.isLoading()) {
+                refreshLayout.finishLoadMore(2, true, false)
+            }
+            refreshLayout.setOnLoadMoreListener {
+                nextPage.invoke(page.current + 1)
+            }
+        } else {
+            // 没有下一页的处理
+            refreshLayout.setEnableLoadMore(false)
+            refreshLayout.setNoMoreData(true)
+            if (page.current > 1 && refreshLayout.isLoading()) {
+                refreshLayout.finishLoadMore(2, true, true)
             }
         }
     }
@@ -357,15 +355,11 @@ abstract class SmartRefreshRecyclerHelper(
 
     interface PageEngine<T> {
 
-        fun getList(): List<T>?
+        val list: List<T>?
 
-        fun getMetaInfo(): MetaEngine?
+        val current: Int
 
-        interface MetaEngine {
-            fun getCurrent(): Int
-
-            fun getLast(): Int
-        }
+        val last: Int
     }
 
     open class PlaceHolderView(view: View) {
