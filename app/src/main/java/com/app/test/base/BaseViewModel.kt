@@ -4,7 +4,6 @@ import android.app.Activity
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.MutableLiveData
-import com.app.test.data.network.ApiException
 import com.app.test.manager.PageManager
 import pers.sweven.common.utils.ToastUtils
 import pers.sweven.common.utils.Utils

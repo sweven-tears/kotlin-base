@@ -10,5 +10,5 @@ import retrofit2.http.GET
  */
 interface ApiService {
     @GET("api/users")
-    suspend fun getUsers():List<User>
+    suspend fun getUsers(): HttpPageResponse<User>
 }

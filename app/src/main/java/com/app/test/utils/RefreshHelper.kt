@@ -9,7 +9,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.setPadding
 import com.app.test.R
-import com.app.test.data.entity.Page
+import com.app.test.data.network.HttpPageResponse
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import pers.sweven.common.base.BaseAdapter
 import pers.sweven.common.utils.SmartRefreshRecyclerHelper
@@ -32,29 +32,19 @@ class RefreshHelper(refreshLayout: SmartRefreshLayout) :
     ) {
 
     fun <T> nextPage(
-        pageInfo: Page<T>?,
+        pageInfo: HttpPageResponse<T>?,
         adapter: BaseAdapter<T, *>,
         showHeadTips: Boolean = false,
         nextPage: (page: Int) -> Unit,
     ) {
         super.nextPage(object : PageEngine<T> {
-            override fun getList(): List<T>? {
-                return pageInfo?.data
-            }
+            override val list: List<T>?
+                get() = pageInfo?.data
+            override val current: Int
+                get() = pageInfo?.page ?: 1
+            override val last: Int
+                get() = pageInfo?.lastPage ?: 1
 
-            override fun getMetaInfo(): PageEngine.MetaEngine? {
-                return pageInfo?.meta?.let {
-                    object : PageEngine.MetaEngine {
-                        override fun getCurrent(): Int {
-                            return it.currentPage
-                        }
-
-                        override fun getLast(): Int {
-                            return it.lastPage
-                        }
-                    }
-                }
-            }
         }, adapter, showHeadTips, nextPage)
     }
 

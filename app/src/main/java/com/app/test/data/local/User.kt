@@ -10,14 +10,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.*
 import com.app.test.App
 import com.app.test.base.BaseViewModel
-import com.app.test.data.network.RetrofitUtils
 import com.app.test.data.network.service.ApiService
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
 
 // 实体类
 @Entity(tableName = "fun_user")
@@ -29,10 +25,10 @@ data class User(
 
 @Entity
 data class Game(
-    @PrimaryKey val id:Int,
-    val name:String,
-    val type:String,
-    val time:String
+    @PrimaryKey val id: Int,
+    val name: String,
+    val type: String,
+    val time: String,
 )
 
 // DAO接口
@@ -45,10 +41,21 @@ interface UserDao {
     suspend fun insertUsers(users: List<User>)
 }
 
+@Dao
+interface GameDao{
+    @Query("SELECT * FROM game")
+    suspend fun getGame(): List<Game>
+
+    @Delete
+    suspend fun deleteGameById(id: Int)
+}
+
 // 数据库
 @Database(entities = [User::class, Game::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+
+    abstract fun gameDao(): GameDao
 }
 
 // 数据仓库
@@ -61,7 +68,7 @@ class UserRepository(
     suspend fun getUsers(): List<User> {
         val localUsers = userDao.getUsers()
         return if (localUsers.isEmpty()) {
-            val remoteUsers = api.getUsers()
+            val remoteUsers = api.getUsers().data?: emptyList()
             userDao.insertUsers(remoteUsers)
             remoteUsers
         } else {
@@ -104,7 +111,7 @@ object Injection {
 
 class UserViewModelFactory(private val repo: UserRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return UserViewModel(repo) as T
+        return UserViewModel(repo) as T
     }
 }
 
