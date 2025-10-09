@@ -113,6 +113,7 @@ dependencies {
     implementation "androidx.room:room-ktx:2.4.0"
     kapt "androidx.room:room-compiler:2.4.0"
 
+    implementation "androidx.core:core-ktx:1.9.0"
     implementation rootProject.ext.dependencies["kc-core"]
     implementation rootProject.ext.dependencies["kc-android"]
     implementation rootProject.ext.dependencies["scope-viewmodel"]

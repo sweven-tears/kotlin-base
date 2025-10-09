@@ -39,8 +39,6 @@ class App : BaseApplication() {
 
         // 设置app-Shared文件名称
         SharedPreferencesUtil.initDefault(Constant.SHARED_FILE_NAME)
-        // 页面监听初始化
-        PageInit.init(this)
 
         // 页面路由初始化
         initActivities(this)
