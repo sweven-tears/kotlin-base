@@ -24,7 +24,7 @@ fun FragmentActivity.getAddress(latitude: Double, longitude: Double): Array<Stri
     val arrays = arrayListOf<String>()
     try {
 
-        val addresses: List<Address> = geocoder.getFromLocation(latitude, longitude, 10)
+        val addresses: List<Address> = geocoder.getFromLocation(latitude, longitude, 10)?: emptyList()
         if (addresses.isNotEmpty()) {
             for (address in addresses) {
                 val area = StringBuilder()
