@@ -8,6 +8,7 @@ apply plugin: 'kotlin-kapt'
 group='com.github.sweven-tears'
 
 android {
+    namespace "pers.sweven.common"
     buildFeatures {
         dataBinding = true
     }

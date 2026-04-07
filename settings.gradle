@@ -1,3 +1,18 @@
+pluginManagement {
+    plugins {
+    }
+}
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            // 这里添加你的依赖
+        }
+    }
+}
+
+enableFeaturePreview("VERSION_CATALOGS")
+
 rootProject.name = "swevenbase"
 include ':common'
 include ':app'

@@ -441,12 +441,13 @@ public final class ToastUtils {
             } else {
                 sToast = Toast.makeText(context, text, duration);
             }
-        }
-        View view = sToast.getView();
-        if (bgResource != -1) {
-            view.setBackgroundResource(bgResource);
-        } else if (backgroundColor != DEFAULT_COLOR) {
-            view.setBackgroundColor(backgroundColor);
+        } else {
+            View view = sToast.getView();
+            if (bgResource != -1) {
+                view.setBackgroundResource(bgResource);
+            } else if (backgroundColor != DEFAULT_COLOR) {
+                view.setBackgroundColor(backgroundColor);
+            }
         }
         sToast.setGravity(gravity, xOffset, yOffset);
         sToast.show();

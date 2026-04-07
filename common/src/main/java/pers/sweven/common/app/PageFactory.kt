@@ -157,43 +157,43 @@ abstract class PageFactory<T : PageFactory.NavigationBuilder<*>> {
         private val path: String,
     ) {
         // 参数容器，用于存储导航时携带的额外参数
-        private val extras = Bundle()
+        protected val extras = Bundle()
 
         // 局部拦截器列表，存储所有局部拦截器
-        private val localInterceptors: MutableList<PrioritizedInterceptor> = ArrayList()
+        protected val localInterceptors: MutableList<PrioritizedInterceptor> = ArrayList()
 
         // Intent启动标志位
-        private var flags = 0
+        protected var flags = 0
 
         // Intent的Action
-        private var action: String? = null
+        protected var action: String? = null
 
         // Intent的Data
-        private var data: Uri? = null
+        protected var data: Uri? = null
 
         // Intent的MIME类型
-        private var type: String? = null
+        protected var type: String? = null
 
         // Intent的类别列表
-        private var categories: MutableList<String>? = null
+        protected var categories: MutableList<String>? = null
 
         // 是否自动添加NEW_TASK标志，默认为true
-        private var autoNewTask = true
+        protected var autoNewTask = true
 
         // 启动选项：之一view跟随动画
-        private var options: ActivityOptionsCompat? = null
+        protected var options: ActivityOptionsCompat? = null
 
         // 进入动画资源ID
-        private var enterAnim = 0
+        protected var enterAnim = 0
 
         // 退出动画资源ID
-        private var exitAnim = 0
+        protected var exitAnim = 0
 
         // Intent自定义钩子，用于对Intent进行自定义操作
-        private var intentCustomizer: Consumer<Intent>? = null
+        protected var intentCustomizer: Consumer<Intent>? = null
 
         // 错误监听器，用于处理导航过程中出现的错误
-        private var errorListener: OnNavigationErrorListener? = null
+        protected var errorListener: OnNavigationErrorListener? = null
 
         protected fun self(): T {
             return this as T

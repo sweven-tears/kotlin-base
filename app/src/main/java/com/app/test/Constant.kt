@@ -1,19 +1,19 @@
-package com.app.test;
+package com.app.test
 
-import android.graphics.Color;
+import androidx.core.graphics.toColorInt
 
 /**
  * Created by Sweven on 2023/6/9.
  * Email:sweventears@Foxmail.com
  */
-public class Constant {
-    public static final boolean DEBUG = BuildConfig.DEBUG;
+object Constant {
+    val DEBUG: Boolean = false
 
-    public static final String BASE_URL = "http://jrt.appapi.yxmyykj.com";
+    const val BASE_URL: String = "http://jrt.appapi.yxmyykj.com"
 
-    public static final String SHARED_FILE_NAME = "shared_test";
-    public static final String PACKAGE_NAME = "com.app.test";
+    const val SHARED_FILE_NAME: String = "shared_test"
+    const val PACKAGE_NAME: String = "com.app.test"
 
-    public static final String COLOR_PRIMARY = "#1979FE";
-    public static final int colorPrimary = Color.parseColor(COLOR_PRIMARY);
+    const val COLOR_PRIMARY: String = "#1979FE"
+    val colorPrimary: Int = COLOR_PRIMARY.toColorInt()
 }
