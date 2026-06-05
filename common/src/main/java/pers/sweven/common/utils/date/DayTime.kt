@@ -2,6 +2,7 @@ package com.yqsh.wandin_weigher
 
 import com.yqsh.wandin_weigher.DayTime.Companion.fromNull
 import com.yqsh.wandin_weigher.DayTime.Companion.now
+import pers.sweven.common.utils.money.Currency
 import java.io.Serializable
 import java.util.Calendar
 import java.util.Locale
@@ -21,7 +22,7 @@ class DayTime private constructor(
     val minute: Int,
     val second: Int,
     val millisecond: Int,
-) {
+) :Comparable<DayTime> {
     operator fun component1() = year
     operator fun component2() = month
     operator fun component3() = day
@@ -96,7 +97,7 @@ class DayTime private constructor(
      * @param other 另一个 DayInfo
      * @return 负数表示当前时间更早，0表示相等，正数表示当前时间更晚
      */
-    operator fun compareTo(other: DayTime): Int {
+    override operator fun compareTo(other: DayTime): Int {
         if (this === other) return 0
         return when {
             year != other.year -> year - other.year
