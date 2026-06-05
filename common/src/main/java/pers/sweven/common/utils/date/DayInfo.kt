@@ -2,25 +2,29 @@ package pers.sweven.common.utils.date
 
 import java.io.Serializable
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.text.isEmpty
+import java.util.Calendar
+import java.util.Locale
 
 /**
  * Created by Sweven on 2024/10/24--16:05.
  * Email: sweventears@163.com
  */
+@Deprecated(
+    message = "请使用 [DayTime] 类",
+    replaceWith = ReplaceWith("DayTime")
+)
 data class DayInfo(
     var year: Int,
     var month: Int,
     var day: Int,
     var hour: Int = 0,
     var minute: Int = 0,
-    var second: Int = 0
+    var second: Int = 0,
 ) : Serializable {
 
-    fun plusYear(year: Int):DayInfo{
-        val calendar  = toCalendar()
-        calendar.add(Calendar.YEAR,year)
+    fun plusYear(year: Int): DayInfo {
+        val calendar = toCalendar()
+        calendar.add(Calendar.YEAR, year)
         return from(calendar)
     }
 
@@ -109,7 +113,7 @@ data class DayInfo(
      * @param [invalid] 无效时文本
      * @return [String] 当日期时间无效时返回空字符串
      */
-    fun format(pattern: String, invalid:String): String {
+    fun format(pattern: String, invalid: String): String {
         if (isValid) {
             return SimpleDateFormat(pattern, Locale.getDefault()).format(toCalendar().time)
         }
@@ -130,7 +134,7 @@ data class DayInfo(
         day: Int = this.day,
         hour: Int = this.hour,
         minute: Int = this.minute,
-        second: Int = this.second
+        second: Int = this.second,
     ): DayInfo {
         this.year = if (year < 1970) 1970 else if (year > 2100) 2100 else year
         this.month = if (month < 1) 1 else if (month > 12) 12 else month
@@ -243,11 +247,20 @@ data class DayInfo(
     }
 
     companion object {
+        @Deprecated(
+            message = "请使用 [DayTime] 类",
+            replaceWith = ReplaceWith("DayTime.today()")
+        )
+        @JvmStatic
         fun today(): DayInfo {
             val calendar = Calendar.getInstance()
             return from(calendar)
         }
 
+        @Deprecated(
+            message = "请使用 [DayTime] 类",
+            replaceWith = ReplaceWith("DayTime.fromCalendar(calendar)")
+        )
         @JvmStatic
         fun from(calendar: Calendar): DayInfo {
             return DayInfo(
@@ -260,6 +273,10 @@ data class DayInfo(
             )
         }
 
+        @Deprecated(
+            message = "请使用 [DayTime] 类",
+            replaceWith = ReplaceWith("DayTime.fromMillis(timeInMillis)")
+        )
         @JvmStatic
         fun from(timeInMillis: Long): DayInfo {
             val calendar = Calendar.getInstance()
@@ -267,6 +284,10 @@ data class DayInfo(
             return from(calendar)
         }
 
+        @Deprecated(
+            message = "请使用 [DayTime] 类",
+            replaceWith = ReplaceWith("DayTime.from(str, format, def)")
+        )
         @JvmStatic
         fun from(str: String, format: String, def: DayInfo = fromNull()): DayInfo {
             if (str.isEmpty()) {
@@ -283,6 +304,11 @@ data class DayInfo(
             }
         }
 
+        @Deprecated(
+            message = "请使用 [DayTime] 类",
+            replaceWith = ReplaceWith("DayTime.fromNull()")
+        )
+        @JvmStatic
         fun fromNull(): DayInfo {
             return DayInfo(0, 0, 0)
         }
