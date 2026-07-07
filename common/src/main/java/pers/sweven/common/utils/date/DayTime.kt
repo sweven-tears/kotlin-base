@@ -1,9 +1,8 @@
-package com.yqsh.wandin_weigher
+package pers.sweven.common.utils.date
 
-import com.yqsh.wandin_weigher.DayTime.Companion.fromNull
-import com.yqsh.wandin_weigher.DayTime.Companion.now
-import pers.sweven.common.utils.money.Currency
-import java.io.Serializable
+import pers.sweven.common.utils.date.DayTime.Companion.fromNull
+import pers.sweven.common.utils.date.DayTime.Companion.now
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
@@ -293,7 +292,7 @@ class DayTime private constructor(
         invalidText: String = "",
         locale: Locale = Locale.getDefault(),
     ): String {
-        return java.text.SimpleDateFormat(pattern, locale).format(calendar.time)
+        return SimpleDateFormat(pattern, locale).format(calendar.time)
     }
 
     fun toDateString(): String = format("yyyy-MM-dd")
@@ -356,7 +355,7 @@ class DayTime private constructor(
             default: DayTime = fromNull(),
         ): DayTime {
             if (text.isEmpty()) return default
-            return java.text.SimpleDateFormat(pattern, locale).parse(text)?.let {
+            return SimpleDateFormat(pattern, locale).parse(text)?.let {
                 val calendar = Calendar.getInstance().apply { time = it }
                 DayTime(
                     year = calendar.get(Calendar.YEAR),
