@@ -11,7 +11,7 @@ import java.util.Locale
  */
 @Deprecated(
     message = "请使用 [DayTime] 类",
-    replaceWith = ReplaceWith("DayTime")
+    replaceWith = ReplaceWith("DayTime","pers.sweven.common.utils.date")
 )
 data class DayInfo(
     var year: Int,
@@ -249,7 +249,7 @@ data class DayInfo(
     companion object {
         @Deprecated(
             message = "请使用 [DayTime] 类",
-            replaceWith = ReplaceWith("DayTime.today()")
+            replaceWith = ReplaceWith("DayTime.today()","pers.sweven.common.utils.date")
         )
         @JvmStatic
         fun today(): DayInfo {
@@ -259,7 +259,7 @@ data class DayInfo(
 
         @Deprecated(
             message = "请使用 [DayTime] 类",
-            replaceWith = ReplaceWith("DayTime.fromCalendar(calendar)")
+            replaceWith = ReplaceWith("DayTime.fromCalendar(calendar)","pers.sweven.common.utils.date")
         )
         @JvmStatic
         fun from(calendar: Calendar): DayInfo {
@@ -275,7 +275,7 @@ data class DayInfo(
 
         @Deprecated(
             message = "请使用 [DayTime] 类",
-            replaceWith = ReplaceWith("DayTime.fromMillis(timeInMillis)")
+            replaceWith = ReplaceWith("DayTime.fromMillis(timeInMillis)","pers.sweven.common.utils.date")
         )
         @JvmStatic
         fun from(timeInMillis: Long): DayInfo {
@@ -286,7 +286,7 @@ data class DayInfo(
 
         @Deprecated(
             message = "请使用 [DayTime] 类",
-            replaceWith = ReplaceWith("DayTime.from(str, format, def)")
+            replaceWith = ReplaceWith("DayTime.from(str, format, def)","pers.sweven.common.utils.date")
         )
         @JvmStatic
         fun from(str: String, format: String, def: DayInfo = fromNull()): DayInfo {
@@ -306,7 +306,7 @@ data class DayInfo(
 
         @Deprecated(
             message = "请使用 [DayTime] 类",
-            replaceWith = ReplaceWith("DayTime.fromNull()")
+            replaceWith = ReplaceWith("DayTime.fromNull()","pers.sweven.common.utils.date")
         )
         @JvmStatic
         fun fromNull(): DayInfo {
