@@ -199,7 +199,7 @@ data class DayInfo(
      * @param [other] 其他
      * @return [Boolean]
      */
-    override fun equals(other: Any?): Boolean {
+    override operator fun equals(other: Any?): Boolean {
         if (this === other) return true
         val (year1, month1, day1) = other as DayInfo
         return year == year1 && month == month1 && day == day1
