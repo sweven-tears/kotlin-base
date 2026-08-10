@@ -26,7 +26,7 @@
 
 ```groovy
 dependencies {
-    implementation 'com.github.sweven-tears:kotlin-base:1.3.8'
+    implementation 'com.github.sweven-tears:kotlin-base:1.3.9'
 }
 ```
 

@@ -184,7 +184,7 @@ class RetrofitClient private constructor(
                     .addHeader("App-Device", Build.DEVICE)
                     .addHeader("App-Brand", Build.BRAND)
                     .addHeader("App-Model", Build.MODEL)
-                    .addHeader("path", chain.request().url().encodedPath())
+                    .addHeader("path", chain.request().url.encodedPath)
                     .also {
                         for (pair in pairs) {
                             it.addHeader(pair.first, pair.second)
