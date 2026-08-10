@@ -32,7 +32,7 @@ dependencyResolutionManagement {
 
 ```groovy
 dependencies {
-    implementation 'com.github.sweven-tears:kotlin-base:1.3.3-sdk30'
+    implementation 'com.github.sweven-tears:kotlin-base:1.3.8'
 }
 ```
 
