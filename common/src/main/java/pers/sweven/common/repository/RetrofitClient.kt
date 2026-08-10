@@ -3,9 +3,8 @@ package pers.sweven.common.repository
 import android.annotation.SuppressLint
 import android.os.Build
 import okhttp3.*
-import okhttp3.internal.platform.Platform
-import okhttp3.internal.platform.Platform.Companion.INFO
 import okhttp3.logging.HttpLoggingInterceptor
+import android.util.Log
 import pers.sweven.common.BuildConfig
 import pers.sweven.common.GlobalApp
 import pers.sweven.common.repository.converter.GsonConverterBodyFactory
@@ -91,6 +90,21 @@ class RetrofitClient private constructor(
 
     companion object {
 
+        /**
+         * 网络日志开关。默认跟随库自身 [pers.sweven.common.BuildConfig.DEBUG]
+         * （发布的 AAR 中该值恒为 false，即默认不打印日志）。
+         * 若三方需要在自己的 debug 构建中查看网络日志，可调用 [setLogEnabled](true)。
+         */
+        @JvmStatic
+        fun isLogEnabled(): Boolean = _logEnabled
+
+        @JvmStatic
+        fun setLogEnabled(enabled: Boolean) {
+            _logEnabled = enabled
+        }
+
+        private var _logEnabled: Boolean = BuildConfig.DEBUG
+
         fun create(
             baseUrl: String,
             connectTimeout: Long = 30,
@@ -170,7 +184,7 @@ class RetrofitClient private constructor(
                     .addHeader("App-Device", Build.DEVICE)
                     .addHeader("App-Brand", Build.BRAND)
                     .addHeader("App-Model", Build.MODEL)
-                    .addHeader("path", chain.request().url.encodedPath)
+                    .addHeader("path", chain.request().url().encodedPath())
                     .also {
                         for (pair in pairs) {
                             it.addHeader(pair.first, pair.second)
@@ -208,14 +222,14 @@ class RetrofitClient private constructor(
                         return
                     }
                     if (message.contains("Content-Disposition: form-data")) {
-                        Platform.get().log("(binary file data omitted)", INFO, null)
+                        Log.d("OkHttp", "(binary file data omitted)")
                     } else {
-                        Platform.get().log(message, INFO, null)
+                        Log.d("OkHttp", message)
                     }
                 }
 
             }).apply {
-                level = if (BuildConfig.DEBUG) {
+                level = if (_logEnabled) {
                     HttpLoggingInterceptor.Level.BODY
                 } else HttpLoggingInterceptor.Level.NONE
             }

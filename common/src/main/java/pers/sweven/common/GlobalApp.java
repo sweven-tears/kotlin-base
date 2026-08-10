@@ -18,12 +18,11 @@ public class GlobalApp {
     private Application application;
 
     public static GlobalApp getInstance() {
-        if (instance == null) {
-            synchronized (GlobalApp.class) {
-                if (instance == null) {
-                    instance = new GlobalApp();
-                }
-            }
+        if (instance == null || instance.application == null) {
+            throw new IllegalStateException(
+                    "GlobalApp 尚未初始化，请在自定义 Application 的 onCreate() 中调用 "
+                            + "GlobalApp.setInstance(this)，或让 Application 继承 "
+                            + "pers.sweven.common.app.BaseApplication");
         }
         return instance;
     }

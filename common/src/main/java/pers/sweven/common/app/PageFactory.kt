@@ -897,4 +897,13 @@ abstract class PageFactory<T : PageFactory.NavigationBuilder<*>> {
 
         // endregion
     }
+
+    companion object {
+        /**
+         * 获取默认 [PageFactory] 单例实现（内置路由表与全局拦截器管理）。
+         * 一般业务直接调用此方法即可，无需自行继承 [PageFactory]。
+         */
+        @JvmStatic
+        fun getInstance(): PageFactory<*> = DefaultPageFactory
+    }
 }

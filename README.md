@@ -32,9 +32,13 @@ dependencyResolutionManagement {
 
 ```groovy
 dependencies {
-    implementation 'com.github.sweven-tears:kotlin-base:1.2.17'
+    implementation 'com.github.sweven-tears:kotlin-base:1.3.3-sdk30'
 }
 ```
+
+> ⚠️ **接入必做**：本 SDK 的 `ToastUtils`、`RetrofitClient` 以及页面栈管理依赖 `GlobalApp`。
+> 请让你的 `Application` 继承 `pers.sweven.common.app.BaseApplication`，或在 `onCreate()` 中调用
+> `GlobalApp.setInstance(this).registerActivity()`。未初始化时相关调用会 NPE。
 
 ## 本项目建议使用MVVM模式的databinding开发
 
